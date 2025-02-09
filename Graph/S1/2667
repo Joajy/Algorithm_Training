@@ -1,0 +1,61 @@
+import java.awt.Point;
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static int[][] area;
+    static boolean[][] vis;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {1, 0, -1, 0};
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        area = new int[n][n];
+        vis = new boolean[n][n];
+        for (int i = 0; i < n; ++i) {
+            String s = br.readLine();
+            for (int j = 0; j < n; ++j) {
+                area[i][j] = s.charAt(j) - '0';
+            }
+        }
+    }
+
+    static void solution() {
+        List<Integer> totals = new ArrayList<>();
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if(vis[i][j] || area[i][j] == 0) continue;
+                int answer = 0;
+                vis[i][j] = true;
+                Deque<Point> q = new ArrayDeque<>();
+                q.add(new Point(i, j));
+                while (!q.isEmpty()) {
+                    Point cur = q.poll();
+                    ++answer;
+                    for (int dir = 0; dir < 4; ++dir) {
+                        int nx = cur.x + dx[dir];
+                        int ny = cur.y + dy[dir];
+                        if(nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+                        if(vis[nx][ny] || area[nx][ny] == 0) continue;
+                        vis[nx][ny] = true;
+                        q.add(new Point(nx, ny));
+                    }
+                }
+                totals.add(answer);
+            }
+        }
+        System.out.println(totals.size());
+        Collections.sort(totals);
+        for (int i : totals) {
+            System.out.println(i);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
