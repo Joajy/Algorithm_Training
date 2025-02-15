@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int v, e, k;
+    static int[] dist;
+    static List<Info>[] edges;
+    static class Info {
+        int vertex, cost;
+
+        Info(int vertex, int cost) {
+            this.vertex = vertex;
+            this.cost = cost;
+        }
+    }
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        v = Integer.parseInt(st.nextToken());
+        e = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(br.readLine());
+        edges = new ArrayList[v + 1];
+        dist = new int[v + 1];
+        for (int i = 1; i <= v; ++i) {
+            edges[i] = new ArrayList<>();
+            dist[i] = (int)1e9;
+        }
+        dist[k] = 0;
+        for (int i = 0; i < e; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            edges[u].add(new Info(v, w));
+        }
+    }
+
+    static void solution() {
+        PriorityQueue<Info> q = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.cost, o2.cost);
+        });
+        q.add(new Info(k, 0));
+        while (!q.isEmpty()) {
+            Info cur = q.poll();
+            for (Info nxt : edges[cur.vertex]) {
+                if(dist[cur.vertex] + nxt.cost >= dist[nxt.vertex]) continue;
+                dist[nxt.vertex] = dist[cur.vertex] + nxt.cost;
+                q.add(new Info(nxt.vertex, dist[nxt.vertex]));
+            }
+        }
+        for (int i = 1; i <= v; ++i) {
+            if(dist[i] == (int)1e9) sb.append("INF\n");
+            else sb.append(dist[i]).append('\n');
+        }
+        System.out.println(sb);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
