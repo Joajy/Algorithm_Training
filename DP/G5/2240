@@ -1,0 +1,42 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int t, w;
+    static int[] locations;
+    static int[][] dp;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        t = Integer.parseInt(st.nextToken());
+        w = Integer.parseInt(st.nextToken());
+        locations = new int[t];
+        dp = new int[t][w + 1];
+        for (int i = 0;i < t; ++i) {
+            locations[i] = Integer.parseInt(br.readLine());
+        }
+    }
+
+    static void solution() {
+        dp[0][0] = locations[0] == 1 ? 1 : 0;
+        dp[0][1] = locations[0] == 2 ? 1 : 0;
+        for (int i = 1; i < t; ++i) {
+            dp[i][0] = dp[i - 1][0] + (locations[i] == 1 ? 1 : 0);
+            for (int j = 1; j <= w; ++j) {
+                dp[i][j] = Math.max(dp[i - 1][j - 1], dp[i - 1][j]) + (j % 2 != locations[i] % 2 ? 1 : 0);
+            }
+        }
+        int answer = 0;
+        for (int i = 0; i <= w; ++i) {
+            answer = Math.max(answer, dp[t - 1][i]);
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
