@@ -1,0 +1,24 @@
+class Solution {
+    public int solution(String skill, String[] skill_trees) {
+        int answer = 0;
+        int[] seq = new int[26];
+        for(int i = 0; i < skill.length(); ++i) {
+            seq[skill.charAt(i) - 'A'] = i + 1;
+        }
+        for(String sk : skill_trees) {
+            int currentSeq = 0;
+            boolean possible = true;
+            for(int i = 0; i < sk.length(); ++i) {
+                int curIndex = sk.charAt(i) - 'A';
+                if(seq[curIndex] == 0) continue;
+                if(seq[curIndex] > currentSeq + 1) {
+                    possible = false;
+                    break;
+                }
+                currentSeq = Math.max(seq[curIndex], currentSeq);
+            }
+            if(possible) ++answer;
+        }
+        return answer;
+    }
+}
