@@ -1,0 +1,27 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+vector<int> solution(int n, int s) {
+    vector<int> answer;
+    if(n > s) {
+        answer.push_back(-1);
+        return answer;
+    }
+    int count = s % n;
+    if(count == 0) {
+        for(int i = 0; i < n; ++i) {
+            answer.push_back(s / n);
+        }
+    }
+    else {
+        for(int i = 0; i < n - count; ++i) {
+            answer.push_back(s / n);
+        }
+        for(int i = 0; i < count; ++i) {
+            answer.push_back(s / n + 1);
+        }
+    }
+    return answer;
+}
