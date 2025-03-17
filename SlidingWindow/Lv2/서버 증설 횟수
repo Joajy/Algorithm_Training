@@ -1,0 +1,16 @@
+class Solution {
+    public int solution(int[] players, int m, int k) {
+        int answer = 0;
+        int[] times = new int[24];
+        for(int i = 0; i < 24; ++i) {
+            if((times[i] + 1) * m > players[i]) continue;
+            int adder = (players[i] - times[i] * m) / m;
+            answer += adder;
+            for(int j = i + 1; j < i + k; ++j) {
+                if(j == 24) break;
+                times[j] += adder;
+            }
+        }
+        return answer;
+    }
+}
