@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    
+    static Map<String, Integer> map = new HashMap<>();
+    
+    static void dfs(String order, String menu, int len, int index) {
+        if(order.length() == len) {
+            if(map.containsKey(order)) {
+                map.put(order, map.get(order) + 1);
+            } else {
+                map.put(order, 1);
+            }
+            return;
+        }
+        if(index >= menu.length()) return;
+        dfs(order, menu, len, index + 1);
+        dfs(order + menu.charAt(index), menu, len, index + 1);
+    }
+    
+    public String[] solution(String[] orders, int[] course) {
+        List<String> answer = new ArrayList<>();
+        //길이(코스)별, 주문별로 dfs를 실행한다.
+        for(int length : course) {
+            for(String order : orders) {
+                //정렬해주지 않을 경우 "XZY", "YZX"라는 같은 메뉴 세팅이 동일 결과로 취급되지 않을 수 있다.
+                char[] arr = order.toCharArray();
+                Arrays.sort(arr);
+                dfs("", new String(arr), length, 0);
+            }
+            if(map.isEmpty()) continue;
+            List<Integer> maxChoice = new ArrayList<>(map.values());
+            int maxCount = Collections.max(maxChoice);
+            //2번 이하로 주문된 케이스는 최대 카운트가 1이더라도 제외한다.
+            if(maxCount < 2) continue;
+            for(String comb : map.keySet()) {
+                if(map.get(comb) != maxCount) continue;
+                answer.add(comb);
+            }
+            map.clear();
+        }
+        Collections.sort(answer);
+        return answer.toArray(new String[0]);
+    }
+}
