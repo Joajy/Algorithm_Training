@@ -1,0 +1,41 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static String a, b;
+    static int answer;
+
+    static void input() throws IOException {
+        a = br.readLine();
+        b = br.readLine();
+        answer = 0;
+    }
+
+    static void dfs(String s) {
+        if(answer == 1) return;
+        if (s.length() == a.length()) {
+            if(s.equals(a)) {
+                answer = 1;
+            }
+            return;
+        }
+        if(s.charAt(s.length() - 1) == 'A') {
+            dfs(s.substring(0, s.length() - 1));
+        }
+        if(s.charAt(0) == 'B') {
+            dfs(new StringBuilder(s.substring(1)).reverse().toString());
+        }
+    }
+
+    static void solution() {
+        dfs(b);
+        System.out.print(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
