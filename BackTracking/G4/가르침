@@ -1,0 +1,61 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, k, answer;
+    static String[] words;
+    static boolean[] alphabet;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        alphabet = new boolean[26];
+        words = new String[n];
+        //a, c, i, n, t
+        alphabet[0] = alphabet[2] = alphabet[8] = alphabet[13] = alphabet[19] = true;
+        for (int i = 0; i < n; ++i) {
+            words[i] = br.readLine();
+        }
+        answer = 0;
+    }
+
+    static int calculatePossibleWords() {
+        int count = 0;
+        for (int i = 0; i < n; ++i) {
+            boolean possible = true;
+            for (int j = 0; j < words[i].length(); ++j) {
+                if(alphabet[words[i].charAt(j) - 'a']) continue;
+                possible = false;
+                break;
+            }
+            if(possible) ++count;
+        }
+        return count;
+    }
+
+    static void dfs(int cnt, int index) {
+        if (cnt == k) {
+            answer = Math.max(answer, calculatePossibleWords());
+            return;
+        }
+        for (int i = index; i < 26; ++i) {
+            if(alphabet[i]) continue;
+            alphabet[i] = true;
+            dfs(cnt + 1, i);
+            alphabet[i] = false;
+        }
+    }
+
+    static void solution() {
+        dfs(5, 0);
+        System.out.print(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
