@@ -1,0 +1,68 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, e, r1, r2;
+    static class Info {
+        int v, cost;
+        public Info(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+    static List<Info>[] edges;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        e = Integer.parseInt(st.nextToken());
+        edges = new ArrayList[n + 1];
+        for (int i = 0; i <= n; ++i) {
+            edges[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < e; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            edges[a].add(new Info(b, c));
+            edges[b].add(new Info(a, c));
+        }
+        st = new StringTokenizer(br.readLine());
+        r1 = Integer.parseInt(st.nextToken());
+        r2 = Integer.parseInt(st.nextToken());
+    }
+
+    static int dijkstra(int start, int end) {
+        int[] dist = new int[n + 1];
+        PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> {
+            return o1.cost - o2.cost;
+        });
+        Arrays.fill(dist, (int)1e8);
+        dist[start] = 0;
+        pq.add(new Info(start, 0));
+        while (!pq.isEmpty()) {
+            Info cur = pq.poll();
+            for (Info nxt : edges[cur.v]) {
+                if(dist[cur.v] + nxt.cost >= dist[nxt.v]) continue;
+                dist[nxt.v] = dist[cur.v] + nxt.cost;
+                pq.add(nxt);
+            }
+        }
+        return dist[end];
+    }
+
+    static void solution() {
+        int answer1 = dijkstra(1, r1) + dijkstra(r1, r2) + dijkstra(r2, n);
+        int answer2 = dijkstra(1, r2) + dijkstra(r1, r2) + dijkstra(r1, n);
+        if(answer1 >= (int)1e8 && answer2 >= (int)1e8) System.out.print(-1);
+        else System.out.print(Math.min(answer1, answer2));
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
