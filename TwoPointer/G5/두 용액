@@ -1,0 +1,66 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, k;
+    static int[] liq;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        liq = new int[n];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; ++i) {
+            liq[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    static int binarySearch(int index) {
+        int minValue = Integer.MAX_VALUE;
+        int s = index + 1, e = n - 1, ret = -1;
+        while (s <= e) {
+            int mid = (s + e) >> 1;
+            int sum = liq[index] + liq[mid];
+            //가장 가치있는 결과값을 임의로 저장한다.
+            if(Math.abs(sum) < minValue) {
+                minValue = Math.abs(sum);
+                ret = liq[mid];
+            }
+            //합산 0 미만일 경우 더 격차를 줄일 수 있을 큰 값이 존재할 것이라 가정할 수 있다.
+            if(sum < 0) {
+                s = mid + 1;
+            } else if(sum > 0) {
+                e = mid - 1;
+            } else {
+                return liq[mid];
+            }
+        }
+        return ret;
+    }
+
+    static void solution() {
+        Arrays.sort(liq);
+        int max = (int)1e9, min = (int)1e9;
+        for (int i = 0; i < n - 1; ++i) {
+            int value = binarySearch(i);
+            int sum = Math.abs(liq[i] + value);
+            //합산 0일 경우 출력 후 즉시 종료
+            if(sum == 0) {
+                System.out.print(liq[i] + " " + value);
+                return;
+            }
+            //현재 합산 최소보다 더 작은 결과값이 도출되었을 경우 갱신
+            if (Math.abs(max + min) > sum) {
+                max = value;
+                min = liq[i];
+            }
+        }
+        System.out.print(min + " " + max);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
