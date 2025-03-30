@@ -1,3 +1,4 @@
+//1. Binary Search
 import java.io.*;
 import java.util.*;
 
@@ -54,6 +55,53 @@ public class Main {
             if (Math.abs(max + min) > sum) {
                 max = value;
                 min = liq[i];
+            }
+        }
+        System.out.print(min + " " + max);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
+
+//2. Two Pointer
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, k;
+    static int[] liq;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        liq = new int[n];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; ++i) {
+            liq[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    static void solution() {
+        Arrays.sort(liq);
+        int s = 0, e = n - 1;
+        int max = (int)1e9, min = (int)1e9;
+        while (s < e) {
+            int sum = liq[s] + liq[e];
+            if (Math.abs(sum) < Math.abs(max + min)) {
+                min = liq[s];
+                max = liq[e];
+            }
+            if(sum == 0) {
+                System.out.print(liq[s] + " " + liq[e]);
+                return;
+            } else if (sum > 0) {
+                --e;
+            } else {
+                ++s;
             }
         }
         System.out.print(min + " " + max);
