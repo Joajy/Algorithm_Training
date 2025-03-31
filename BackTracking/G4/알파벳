@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int r, c, answer, converter;
+    static char[][] area;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {1, 0, -1, 0};
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        r = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
+        area = new char[r][c];
+        for (int i = 0; i < r; ++i) {
+            String s = br.readLine();
+            for (int j = 0; j < c; ++j) {
+                area[i][j] = s.charAt(j);
+            }
+        }
+        answer = 0;
+        converter = 'A' - 1;
+    }
+
+    static boolean range(int x, int y) {
+        return x >= 0 && x < r && y >= 0 && y < c;
+    }
+
+    static void dfs(int x, int y, int count, int vis) {
+        answer = Math.max(answer, count);
+        for (int dir = 0; dir < 4; ++dir) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            //범위를 벗어나거나, 이미 방문한 경우
+            if(!range(nx, ny) ) continue;
+            int shift = area[nx][ny] - converter;
+            if((vis & (1 << shift)) != 0) continue;
+            dfs(nx, ny, count + 1, vis | (1 << shift));
+        }
+    }
+
+    static void solution() {
+        dfs(0, 0, 1, 1 << (area[0][0] - converter));
+        System.out.print(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
