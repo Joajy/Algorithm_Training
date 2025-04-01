@@ -1,0 +1,36 @@
+#include<iostream>
+#include<stack>
+#include<queue>
+#include<functional>
+#define p pair<int, int>
+#define index first
+#define value second
+using namespace std;
+
+int main(){
+    int n, num;
+    cin >> n;
+    stack<p> s;
+    priority_queue<p, vector<p>, greater<p>> answer;
+    for(int i = 0; i < n; ++i){
+        cin >> num;
+        //스택이 비지 않고 내부 값이 num보다 작은 동안은 계속 빼낸다
+        while(!s.empty()){
+            p left = s.top();
+            //왼쪽 값이 더 크다면 종료 후 바로 비교한 값을 stack에 집어넣는다.
+            if(left.value >= num) break;
+            answer.push({left.index, num});
+            s.pop();
+        }
+        s.push({i, num});
+    }
+    while(!s.empty()){
+        answer.push({s.top().index, -1});
+        s.pop();
+    }
+    while(!answer.empty()){
+        cout << answer.top().value << ' ';
+        answer.pop();
+    }
+    return 0;
+}
