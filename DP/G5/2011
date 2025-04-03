@@ -1,0 +1,42 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static int[] dp;
+    static String s;
+
+    static void input() throws IOException {
+        s = br.readLine();
+        n = s.length();
+        dp = new int[n + 1];
+    }
+
+    static void solution() {
+        if (s.charAt(0) == '0') {
+            System.out.print(0);
+            return;
+        }
+        dp[0] = dp[1] = 1;
+        for (int i = 2; i <= n; ++i) {
+            int number = s.charAt(i - 1) - '0';
+            if(number > 0) {
+                dp[i] = dp[i - 1];
+                dp[i] %= 1000000;
+            }
+            number += (s.charAt(i - 2) - '0') * 10;
+            if (number >= 10 && number <= 26) {
+                dp[i] += dp[i - 2];
+                dp[i] %= 1000000;
+            }
+        }
+        System.out.print(dp[n] % 1000000);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
