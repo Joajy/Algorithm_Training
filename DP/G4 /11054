@@ -1,0 +1,46 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static int[] a, dp, rdp;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        a = new int[n + 1];
+        dp = new int[n + 1];
+        rdp = new int[n + 1];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; ++i) {
+            a[i] = Integer.parseInt(st.nextToken());
+            dp[i] = rdp[i] = 1;
+        }
+    }
+
+    static void solution() {
+        for (int i = 1; i <= n; ++i) {
+            for (int j = i; j <= n; ++j) {
+                if(a[i] >= a[j] || dp[i] + 1 <= dp[j]) continue;
+                dp[j] = dp[i] + 1;
+            }
+        }
+        for (int i = n; i >= 1; --i) {
+            for (int j = i; j >= 1; --j) {
+                if(a[i] >= a[j] || rdp[i] + 1 <= rdp[j]) continue;
+                rdp[j] = rdp[i] + 1;
+            }
+        }
+        int answer= 0;
+        for (int i = 1; i <= n; ++i) {
+            answer = Math.max(answer, dp[i] + rdp[i] - 1);
+        }
+        System.out.print(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
