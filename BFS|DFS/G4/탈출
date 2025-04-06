@@ -1,0 +1,88 @@
+import java.awt.Point;
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int r, c;
+    static char[][] area;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {1, 0, -1, 0};
+    static Point start, end;
+    static Deque<Point> q;
+    static int[][] bTime, wTime;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        r = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
+        q = new ArrayDeque<>();
+        area = new char[r][c];
+        bTime = new int[r][c];
+        wTime = new int[r][c];
+        for (int i = 0; i < r; ++i) {
+            String s = br.readLine();
+            for (int j = 0; j < c; ++j) {
+                area[i][j] = s.charAt(j);
+                bTime[i][j] = wTime[i][j] = (int)1e9;
+                if (area[i][j] == 'D') {
+                    end = new Point(i, j);
+                } else if (area[i][j] == 'S') {
+                    start = new Point(i, j);
+                    bTime[i][j] = 0;
+                } else if (area[i][j] == '*') {
+                    q.add(new Point(i, j));
+                    wTime[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    static boolean range(int x, int y) {
+        return x >= 0 && x < r && y >= 0 && y < c;
+    }
+
+    static void wSpread() {
+        while (!q.isEmpty()) {
+            Point cur = q.poll();
+            for (int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                if (!range(nx, ny) || area[nx][ny] != '.') continue;
+                if(wTime[cur.x][cur.y]  + 1 >= wTime[nx][ny]) continue;
+                wTime[nx][ny] = wTime[cur.x][cur.y] + 1;
+                q.add(new Point(nx, ny));
+            }
+        }
+    }
+
+    static void bSpread() {
+        q.add(start);
+        while (!q.isEmpty()) {
+            Point cur = q.poll();
+            for (int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                if (!range(nx, ny) || area[nx][ny] == 'X') continue;
+                if(bTime[cur.x][cur.y]  + 1 >= bTime[nx][ny]) continue;
+                if(wTime[nx][ny] <= bTime[cur.x][cur.y] + 1) continue;
+                bTime[nx][ny] = bTime[cur.x][cur.y] + 1;
+                q.add(new Point(nx, ny));
+            }
+        }
+    }
+
+    static void solution() {
+        wSpread();
+        bSpread();
+        if(bTime[end.x][end.y] == (int)1e9) System.out.print("KAKTUS");
+        else System.out.print(bTime[end.x][end.y]);
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
