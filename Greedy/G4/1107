@@ -1,0 +1,44 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, answer;
+    static final int MAX = 1_000_000;
+    static boolean[] broken;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        m = Integer.parseInt(br.readLine());
+        broken = new boolean[11];
+        if(m == 0) return;
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < m; ++i) {
+            int brokenButton = Integer.parseInt(st.nextToken());
+            broken[brokenButton] = true;
+        }
+    }
+
+    static boolean possible(String number) {
+        for (int i = 0; i < number.length(); ++i) {
+            if(broken[number.charAt(i) - '0']) return false;
+        }
+        return true;
+    }
+
+    static void solution() {
+        answer = Math.abs(100 - n);
+        for (int i = 0; i < MAX; ++i) {
+            String number = String.valueOf(i);
+            if(!possible(number)) continue;
+            answer = Math.min(answer, number.length() + Math.abs(n - i));
+        }
+        System.out.print(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
