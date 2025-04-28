@@ -1,0 +1,44 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int h, w;
+    static boolean[][] water;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        h = Integer.parseInt(st.nextToken());
+        w = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        water = new boolean[h][w];
+        for (int i = 0; i < w; ++i) {
+            int height = Integer.parseInt(st.nextToken());
+            for (int j = 0; j < height; ++j) {
+                water[j][i] = true;
+            }
+        }
+    }
+
+    static void solution() {
+        int answer = 0;
+        for (int height = h - 1; height >= 0; --height) {
+            Deque<Integer> q = new ArrayDeque<>();
+            for (int width = 0; width < w; ++width) {
+                if (water[height][width]) q.add(width);
+            }
+            while (q.size() > 1) {
+                int cur = q.pollFirst();
+                answer += (q.peekFirst() - cur - 1);
+            }
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
