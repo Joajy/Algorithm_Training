@@ -1,0 +1,39 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int p, q;
+    static long n;
+    static HashMap<Long, Long> map;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Long.parseLong(st.nextToken());
+        p = Integer.parseInt(st.nextToken());
+        q = Integer.parseInt(st.nextToken());
+        map = new HashMap<>();
+    }
+
+    static long search(long value) {
+        if(value == 0) return 1;
+        if(map.containsKey(value)) return map.get(value);
+
+        long a_ip = (long)Math.floor(value / p);
+        long a_iq = (long) Math.floor(value / q);
+
+        map.put(value, search(a_ip) + search(a_iq));
+
+        return map.get(value);
+    }
+
+    static void solution() {
+        System.out.println(search(n));
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
