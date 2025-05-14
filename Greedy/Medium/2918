@@ -1,0 +1,27 @@
+class Solution {
+    public long minSum(int[] nums1, int[] nums2) {
+        int zCnt1 = 0, zCnt2 = 0;
+        long sum1 = 0, sum2 = 0;
+        //0을 카운팅하고, 0 이외의 값은 전부 합산
+        //0은 최소 1 이상으로 연결되므로 +1을 더해준다
+        for(int n : nums1) {
+            sum1 += n;
+            if(n == 0) {
+                ++sum1;
+                ++zCnt1;
+            }
+        }
+        for(int n : nums2) {
+            sum2 += n;
+            if(n == 0) {
+                ++sum2;
+                ++zCnt2;
+            }
+        }
+        if((zCnt1 == 0 && sum1 < sum2) || (zCnt2 == 0 && sum1 > sum2)) {
+            return -1;
+        }
+        return Math.max(sum1, sum2);
+    }
+
+}
