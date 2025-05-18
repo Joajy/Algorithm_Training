@@ -1,0 +1,22 @@
+class Solution {
+    public void sortColors(int[] nums) {
+        int red = 0, white = 0, blue = 0;
+        //1. 각 색깔별로 분류 작업 실시
+        //인접하게 만들기 때문에 갯수만 세어도 무방하다.
+        for(int num : nums) {
+            if(num == 0) ++red;
+            else if(num == 1) ++white;
+            else ++blue;
+        }
+        //2. 분류한 갯수대로 인접 행렬에 재배치한다.
+        for(int i = 0; i < red; ++i) {
+            nums[i] = 0;
+        }
+        for(int i = red; i < red + white; ++i) {
+            nums[i] = 1;
+        }
+        for(int i = red + white; i < nums.length; ++i) {
+            nums[i] = 2;
+        }
+    }
+}
