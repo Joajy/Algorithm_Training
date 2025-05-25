@@ -1,0 +1,35 @@
+class Solution {
+    public int longestPalindrome(String[] words) {
+        int answer = 0;
+        Map<String, Integer> map = new HashMap<>();
+        //각 String별로 일괄 counting
+        for(String word : words) {
+            if(map.containsKey(word)) {
+                map.put(word, map.get(word) + 1);
+            } else {
+                map.put(word, 1);
+            }
+        }
+        int possibility = 0;
+        //words의 인자를 reverse한 문자열이 map에 있다면 정답에 추가
+        for(String word : words) {
+            if(!map.containsKey(word)) continue;
+            //동일 문자열이면서 2 이상의 짝수일 경우 추가
+            if(word.charAt(0) == word.charAt(1)) {
+                answer += (map.get(word) - (map.get(word) % 2)) << 1;
+                if(map.get(word) % 2 == 1) possibility = 1;
+                map.remove(word);
+                continue;
+            }
+            //내부값이 동일하지 않은 문자열들에 대해 reverse 값까지 일괄 처리
+            String reverse = new StringBuilder(word).reverse().toString();
+            if(map.containsKey(reverse)) {
+                int adder = Math.min(map.get(word), map.get(reverse));
+                answer += adder << 2;
+                map.remove(reverse);
+            }
+        }
+        answer += possibility << 1;
+        return answer;
+    }
+}
