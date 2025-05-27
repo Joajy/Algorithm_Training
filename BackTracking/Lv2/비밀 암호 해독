@@ -1,0 +1,105 @@
+//1. 최적화 이전 코드
+import java.util.*;
+
+class Solution {
+    
+    static boolean[] numbers;
+    static int n, answer;
+    static int[] a;
+    static int[][] q;
+    static List<Integer> list;
+    
+    public int solution(int N, int[][] Q, int[] ans) {
+        n = N;
+        q = Q;
+        a = ans;
+        answer = 0;
+        list = new ArrayList<>();
+        numbers = new boolean[n + 1];
+        rec(1, 0);
+        return answer;
+    }
+    
+    static void rec(int index, int count) {
+        if(count == 5) {
+            if(check()) {
+                ++answer;
+            }
+            return;
+        }
+        for(int i = index; i <= n; ++i) {
+            list.add(i);
+            rec(i + 1, count + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+    
+    static boolean check() {
+        for(int i = 0; i < q.length; ++i) {
+            int count = 0;
+            for(int j = 0; j < 5; ++j) {
+                if(!list.contains(q[i][j])) continue;
+                ++count;
+            }
+            //리스트가 가지고있는 갯수와 해당 index에서의 i와 다를 경우 조건에 부합하지 않는다.
+            if(count != a[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+//2. 최적화 이후 코드
+//   contains의 시간 복잡도를 고려하여 list에서 set으로 자료구조 변경
+//   list.contains -> O(N) , set.contains -> O(1)
+import java.util.*;
+
+class Solution {
+    
+    static boolean[] numbers;
+    static int n, answer;
+    static int[] a;
+    static int[][] q;
+    static Set<Integer> set;
+    
+    public int solution(int N, int[][] Q, int[] ans) {
+        n = N;
+        q = Q;
+        a = ans;
+        answer = 0;
+        set = new HashSet<>();
+        numbers = new boolean[n + 1];
+        rec(1, 0);
+        return answer;
+    }
+    
+    static void rec(int index, int count) {
+        if(count == 5) {
+            if(check()) {
+                ++answer;
+            }
+            return;
+        }
+        for(int i = index; i <= n; ++i) {
+            set.add(i);
+            rec(i + 1, count + 1);
+            set.remove(i);
+        }
+    }
+    
+    static boolean check() {
+        for(int i = 0; i < q.length; ++i) {
+            int count = 0;
+            for(int j = 0; j < 5; ++j) {
+                if(!set.contains(q[i][j])) continue;
+                ++count;
+            }
+            //리스트가 가지고있는 갯수와 해당 index에서의 i와 다를 경우 조건에 부합하지 않는다.
+            if(count != a[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
