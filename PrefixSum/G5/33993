@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, r, c, w;
+    static int destX, destY;
+    static long answer;
+    static int[][] area;
+    static long[][] prefix;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        r = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
+        w = Integer.parseInt(st.nextToken());
+        answer = destX = destY = 0;
+        area = new int[r + 1][c + 1];
+        prefix = new long[r + 1][c + 1];
+        for(int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            area[x][y] = 1;
+        }
+    }
+
+    static void solution() {
+        //1. prefix Sum을 통해 마지막 위치까지 몇 명의 친구들을 거쳐왔는지(존재했는지) 기록한다.
+        for(int i = 1; i <= r; i++) {
+            for(int j = 1; j <= c; j++) {
+                prefix[i][j] = prefix[i - 1][j] + prefix[i][j - 1] - prefix[i - 1][j - 1] + area[i][j];
+            }
+        }
+        //2. 순회하며 prefix 에서 w / 2 만큼 x 및 y에 대한 차이만큼 제외하고, 중복되는 케이스를 제외하기 위해 끝 지점을 다시 더해준다.
+        int d = w >> 1;
+        for(int i = 1; i <= r; i++) {
+            for(int j = 1; j <= c; j++) {
+                if(area[i][j] == 1) continue;
+                int x1 = Math.max(i - d, 1);
+                int y1 = Math.max(j - d, 1);
+                int x2 = Math.min(i + d, r);
+                int y2 = Math.min(j + d, c);
+                long total = prefix[x2][y2]
+                           - prefix[x1 - 1][y2]
+                           - prefix[x2][y1 - 1]
+                           + prefix[x1 - 1][y1 - 1];
+                if (total > answer) {
+                    answer = total;
+                    destX = i;
+                    destY = j;
+                }
+            }
+        }
+        System.out.println(answer);
+        System.out.println(destX + " " + destY);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
