@@ -1,0 +1,40 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static int n;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+    }
+
+    static void solution() {
+        //홀수 항에서는 큰 값 중 최소값부터 곱해주고
+        //짝수 항에서는 작은 값 중 최대값부터 더해준다
+        int start = (n >> 1), end = (n >> 1) + (n % 2);
+        //start == end인 상황, 즉 n이 홀수인 케이스
+        if(n % 2 == 1) {
+            sb.append(end++).append(' ');
+            while(start >= 1) {
+                sb.append(start).append(' ');
+                sb.append(end).append(' ');
+                --start; ++end;
+            }
+        } else {
+            ++end;
+            while(start >= 1) {
+                sb.append(end).append(' ');
+                sb.append(start).append(' ');
+                --start; ++end;
+            }
+        }
+        System.out.println(sb);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
