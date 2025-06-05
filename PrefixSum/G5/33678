@@ -1,0 +1,56 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, k, x, answer;
+    static int[] a, prefix;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        x = Integer.parseInt(st.nextToken());
+        a = new int[n + 1];
+        prefix = new int[n + 1];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; i++) {
+            a[i] = Integer.parseInt(st.nextToken());
+            prefix[i] = prefix[i - 1] + a[i];
+        }
+        answer = -1;
+    }
+
+    static int binarySearch(int start) {
+        int end = n, ret = -1;
+        int before = prefix[start - 1] * x;
+        while(start <= end) {
+            int mid = (start + end) >> 1;
+            int totalSum = before + (prefix[n] - prefix[mid]);
+            if(totalSum < k) {
+                end = mid - 1;
+            } else {
+                ret = mid;
+                start = mid + 1;
+            }
+        }
+        return ret;
+    }
+
+    static void solution() {
+        for(int hStart = 1; hStart <= n; ++hStart) {
+            int hEnd = binarySearch(hStart);
+            if(hEnd < hStart) continue;
+            if(answer < hEnd - hStart + 1) {
+                answer = hEnd - hStart + 1;
+            }
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
