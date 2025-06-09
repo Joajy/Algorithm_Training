@@ -1,0 +1,78 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static long answer;
+    static int[] numbers;
+    static Long VALUE = Long.MAX_VALUE;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        numbers = new int[6 + 1];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= 6; ++i) {
+            numbers[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    static void findOne() {
+        long minValue = VALUE;
+        for(int i = 1; i <= 6; ++i) {
+            minValue = Math.min(minValue, numbers[i]);
+        }
+        answer += 5L * (n - 2) * (n - 2) * minValue;
+        //가장 밑단의 중간 노드들에 대한 합산 값
+        answer += 4L * (n - 2) * minValue;
+    }
+
+    static void findThree() {
+        long minValue = 0;
+        //6개를 확인하고 반대 방향을 제외한 다른 노드와의 합산(a+b+c)이 최소가 되는 값을 찾아야 한다.
+        for(int i = 1; i <= 3; ++i) {
+            minValue += Math.min(numbers[i], numbers[7 - i]);
+        }
+        answer += 4L * minValue;
+    }
+
+    static void findTwo() {
+        long minValue = VALUE;
+        for(int i = 1; i <= 6; ++i) {
+            for(int j = i + 1; j <= 6; ++j) {
+                if(i + j == 7) continue;
+                minValue = Math.min(minValue, numbers[i] + numbers[j]);
+            }
+        }
+        //최상단에서의 중간값 4선분, 중간에서의 높이개념 4선분을 합산
+        answer += 8L * (n - 2) * minValue;
+        //가장 밑단의 4개의 최외곽을 여기서 더해준다
+        answer += 4L * minValue;
+    }
+
+    static void solution() {
+        answer = 0;
+        if(n == 1) {
+            long maxValue = 0;
+            for(int i = 1; i <= 6; ++i) {
+                maxValue = Math.max(maxValue, numbers[i]);
+                answer += numbers[i];
+            }
+            System.out.println(answer - maxValue);
+            return;
+        }
+        //1. 내부 주사위
+        findOne();
+        //2. 중간 외곽 주사위
+        findTwo();
+        //3. 최외곽 주사위
+        findThree();
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
