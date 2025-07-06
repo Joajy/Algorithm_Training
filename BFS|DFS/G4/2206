@@ -1,0 +1,84 @@
+import java.awt.Point;
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {1, 0, -1, 0};
+    static boolean checked;
+    static char[][] area;
+    static int[][][] dist;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        area = new char[n][m];
+        for (int i = 0; i < n; ++i) {
+            String s = br.readLine();
+            for(int j = 0; j < m; ++j) {
+                area[i][j] = s.charAt(j);
+            }
+        }
+        dist = new int[n][m][2];
+        for (int i = 0; i < n; ++i) {
+            for(int j = 0; j < m; ++j) {
+                dist[i][j][0] = dist[i][j][1] = (int)1e9;
+            }
+        }
+    }
+
+    static void solution() {
+        Deque<Point> q = new ArrayDeque<>();
+        q.add(new Point(0, 0));
+        dist[0][0][0] = dist[0][0][1] = 1;
+        while (!q.isEmpty()) {
+            Point cur = q.poll();
+            if(cur.x == n - 1 && cur.y == m - 1) {
+                System.out.println(Math.min(dist[cur.x][cur.y][0], dist[cur.x][cur.y][1]));
+                return;
+            }
+            for(int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                checked = false;
+                //구간을 벗어나면 생략
+                if(nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                //해당 영역이 0일 때
+                if (area[nx][ny] == '0') {
+                    //벽 안 뚫은 케이스
+                    if(dist[nx][ny][0] > dist[cur.x][cur.y][0] + 1) {
+                        dist[nx][ny][0] = dist[cur.x][cur.y][0] + 1;
+                        checked = true;
+                    }
+                    //벽 뚫었던 케이스
+                    else if(dist[nx][ny][1] > dist[cur.x][cur.y][1] + 1) {
+                        dist[nx][ny][1] = dist[cur.x][cur.y][1] + 1;
+                        checked = true;
+                    }
+                }
+                //해당 영역이 1일 떄
+                else if (area[nx][ny] == '1') {
+                    if(dist[nx][ny][1] > dist[cur.x][cur.y][0] + 1) {
+                        dist[nx][ny][1] = dist[cur.x][cur.y][0] + 1;
+                        checked = true;
+                    }
+                }
+                //위 경우의 수 중 하나라도 이동 경로가 존재할 경우 다음 칸을 집어넣는다
+                if(checked) {
+                    q.add(new Point(nx, ny));
+                }
+            }
+        }
+        System.out.println(-1);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
