@@ -1,0 +1,17 @@
+class Solution {
+    public int maximumLength(int[] nums) {
+        int n = nums.length, k = 2;
+        int answer = 0;
+        int[][] dp = new int[k][k];
+        for(int num : nums) {
+            num %= k;
+            // 현재 k mod num에 대해 prev를 0부터 k까지 살펴보며
+            // num과 prev의 mod 합산값이 동일한 직전 값(prev + num의 mod값)의 dp값을 가져온다
+            for(int prev = 0; prev < k; ++prev) {
+                dp[num][prev] = dp[prev][num] + 1;
+                answer = Math.max(answer, dp[num][prev]);
+            }
+        }
+        return answer;
+    }
+}
