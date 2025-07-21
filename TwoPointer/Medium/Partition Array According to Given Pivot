@@ -1,0 +1,29 @@
+class Solution {
+    public int[] pivotArray(int[] nums, int pivot) {
+        int n = nums.length;
+        Queue<Integer> left = new ArrayDeque<>();
+        Queue<Integer> right = new ArrayDeque<>();
+        int mid = 0;
+        for(int num : nums) {
+            if(pivot > num) {
+                right.add(num);
+            } else if(pivot < num) {
+                left.add(num);
+            } else {
+                ++mid;
+            }
+        }
+        int[] answer = new int[n];
+        int r = right.size();
+        for(int i = 0; i < r; ++i) {
+            answer[i] = right.poll();
+        }
+        for(int i = r; i < r + mid; ++i) {
+            answer[i] = pivot;
+        }
+        for(int i = r + mid; i < n; ++i) {
+            answer[i] = left.poll();
+        }
+        return answer;
+    }
+}
