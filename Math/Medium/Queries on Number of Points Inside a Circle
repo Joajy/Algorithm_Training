@@ -1,0 +1,21 @@
+class Solution {
+    public int[] countPoints(int[][] points, int[][] queries) {
+        int[] answer = new int[queries.length];
+        for(int i = 0; i < queries.length; ++i) {
+            int count = 0;
+            for(int j = 0; j < points.length; ++j) {
+                if(getDist(queries[i], points[j]) <= queries[i][2] * queries[i][2]) {
+                    ++count;
+                }
+            }
+            answer[i] = count;
+        }
+        return answer;
+    }
+
+    public int getDist(int[] query, int[] point) {
+        int r = Math.abs(query[0] - point[0]);
+        int c = Math.abs(query[1] - point[1]);
+        return r * r + c * c;
+    }
+}
