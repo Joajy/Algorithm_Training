@@ -1,0 +1,23 @@
+class Solution {
+
+    static List<String> answer;
+
+    public List<String> generateParenthesis(int n) {
+        answer = new ArrayList<>();
+        genPar(n << 1, 0, 0, "");
+        return answer;
+    }
+
+    static void genPar(int n, int l, int r, String s) {
+        //더 붙일 것이 없을 경우 완성된 것이므로 추가
+        if(n == 0) {
+            if(l != r) return;
+            answer.add(s);
+            return;
+        }
+        //(보다 )가 많은 경우
+        if(l < r) return;
+        genPar(n - 1, l + 1, r, s + "(");
+        genPar(n - 1, l, r + 1, s + ")");
+    }
+}
