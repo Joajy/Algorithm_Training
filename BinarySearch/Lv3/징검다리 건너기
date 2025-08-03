@@ -1,0 +1,31 @@
+class Solution {
+    public int solution(int[] stones, int k) {
+        int answer = 0;
+        int s = 0, e = (int)2e9;
+        while(s <= e) {
+            int mid = (s + e) >> 1;
+            if(isPossible(stones, k, mid)) {
+                answer = mid;
+                s = mid + 1;
+            } else {
+                e = mid - 1;
+            }
+        }
+        return answer;
+    }
+    
+    static boolean isPossible(int[] stones, int k, int value) {
+        int count = 0;
+        for(int i = 0; i < stones.length; ++i) {
+            //해당 칸이 연속되게 0인 케이스를 지속 탐색
+            //아닐 경우 디딤돌이 해당 칸에 존재하므로 다시 카운팅 시작
+            if(stones[i] < value) {
+                ++count;
+            } else {
+                count = 0;
+            }
+            if(count == k) return false;
+        }
+        return true;
+    }
+}
