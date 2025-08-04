@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    
+    static int n;
+    static boolean[] vis;
+    static String traversal="";
+    
+    public String[] solution(String[][] tickets) {
+        n = tickets.length;
+        vis = new boolean[n];
+        dfs(tickets, "ICN", "ICN", 0);
+        StringTokenizer st = new StringTokenizer(traversal, " ");
+        String[] answer = new String[n + 1];
+        for(int i = 0; i < n + 1; ++i) {
+            answer[i] = st.nextToken();
+        }
+        return answer;
+    }
+    
+    static void dfs(String[][] tickets, String cur, String route, int count) {
+        //종료 조건 -> n개의 모든 도시를 돌았을 경우
+        if(n == count) {
+            //가능한 경로가 2개 이상인 경우, 알파벳 순서가 앞설 수 있도록 한다
+            if(traversal.equals("") || traversal.compareTo(route) > 0) {
+                traversal = route;
+            }
+            return;
+        }
+        for(int i = 0; i < n; ++i) {
+            //도착한 시작점이 동일하지 않거나 방문했던 경로일 경우
+            if(tickets[i][0].compareTo(cur) != 0 || vis[i]) continue;
+            vis[i] = true;
+            dfs(tickets, tickets[i][1], route + " " + tickets[i][1], count + 1);
+            vis[i] = false;
+        }
+    }
+}
