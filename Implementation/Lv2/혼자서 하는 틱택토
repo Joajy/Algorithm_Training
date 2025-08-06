@@ -1,0 +1,65 @@
+class Solution {
+    
+    static String[] board;
+    
+    public int solution(String[] board) {
+        this.board = board;
+        int answer = 1;
+        int xCnt = 0, oCnt = 0;
+        for(int i = 0; i < 3; ++i) {
+            for(int j = 0; j < 3; ++j) {
+                if(board[i].charAt(j) == 'O') ++oCnt;
+                else if(board[i].charAt(j) == 'X') ++xCnt;
+            }
+        }
+        //X는 O보다 적어야 한다
+        //O는 X + 2보단 적어야 한다
+        if(xCnt > oCnt || oCnt >= xCnt + 2) return 0;
+        //O가 이겼을 때, O가 X보다 1개 더 많아야 한다
+        if(firstWin('O') && oCnt == xCnt) return 0;
+        //X가 이겼을 떄, X가 O와 갯수가 동일해야 한다
+        if(firstWin('X') && xCnt + 1 == oCnt) return 0;
+        return 1;
+    }
+    
+    static boolean firstWin(char c) {
+        boolean isWin;
+        // 가로
+        for(int i = 0; i < 3; ++i) {
+            isWin = true;
+            for(int j = 0; j < 3; ++j) {
+                if(c == board[i].charAt(j)) continue;
+                isWin = false;
+                break;
+            }
+            if(isWin) return true;
+        }
+        // 세로
+        for(int i = 0; i < 3; ++i) {
+            isWin = true;
+            for(int j = 0; j < 3; ++j) {
+                if(c == board[j].charAt(i)) continue;
+                isWin = false;
+                break;
+            }
+            if(isWin) return true;
+        }
+        // 왼쪽 대각선
+        isWin = true;
+        for(int i = 0; i < 3; ++i) {
+            if(board[i].charAt(i) == c) continue;
+            isWin = false;
+            break;
+        }
+        if(isWin) return true;
+        // 오른쪽 대각선
+        isWin = true;
+        for(int i = 0; i < 3; ++i) {
+            if(board[2 - i].charAt(i) == c) continue;
+            isWin = false;
+            break;
+        }
+        if(isWin) return true;
+        return false;
+    }
+}
