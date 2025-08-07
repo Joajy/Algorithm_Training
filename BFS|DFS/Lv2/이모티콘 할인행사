@@ -1,0 +1,55 @@
+class Solution {
+    
+    static final int[] ratio = {10, 20, 30, 40};
+    static int[] sales, answer;
+    static int n, r;
+    static int[][] users;
+    static int[] emoticons;
+    
+    public int[] solution(int[][] users, int[] emoticons) {
+        this.users = users;
+        this.emoticons = emoticons;
+        answer = new int[]{0, 0};
+        n = users.length;
+        r = emoticons.length;
+        sales = new int[r];
+        settingValues(0);
+        return answer;
+    }
+    
+    static void calculate() {
+        int countUsers = 0, totalAmount = 0;
+        for(int i = 0; i < n; ++i) {
+            int sum = 0;
+            for(int j = 0; j < r; ++j) {
+                //사용자가 원하는 할인률보다 낮을 경우 스킵
+                if(users[i][0] > ratio[sales[j]]) continue;
+                sum += (emoticons[j] * (100 - ratio[sales[j]]) / 100);
+            }
+            if(sum >= users[i][1]) {
+                ++countUsers;
+            } else {
+                totalAmount += sum;
+            }
+        }
+        //전체 갱신 조건
+        if(answer[0] <= countUsers) {
+            if(answer[0] == countUsers) {
+                answer[1] = Math.max(answer[1], totalAmount);
+                return;
+            }
+            answer = new int[]{countUsers, totalAmount};
+        }
+    }
+    
+    static void settingValues(int index) {
+        if(index == r) {
+            calculate();
+            return;
+        }
+        for(int i = 0; i < 4; ++i) {
+            sales[index] = i;
+            settingValues(index + 1);
+        }
+    }
+}
