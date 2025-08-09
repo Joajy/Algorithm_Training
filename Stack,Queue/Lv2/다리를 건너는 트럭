@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    
+    static int n;
+    static int[] startTime;
+    
+    public int solution(int bridge_length, int weight, int[] truck_weights) {
+        //answer는 매 초마다 더해준다
+        int answer = 0, curWeight = 0, index = 0;
+        n = truck_weights.length;
+        startTime = new int[n];
+        //트럭들 순번 담기
+        Deque<Integer> q = new ArrayDeque<>();
+        while(index < n) {
+            ++answer;
+            //현 시점에서 다리를 건넜는지 확인
+            while(!q.isEmpty()) {
+                int cur = q.peek();
+                if(answer >= startTime[cur] + bridge_length) {
+                    curWeight -= truck_weights[q.poll()];
+                } else break;
+            }
+            //index번 트럭이 현재 있는 트럭으로 추가되더라도 하중이 버틸 수 있다면
+            if(curWeight + truck_weights[index] <= weight) {
+                startTime[index] = answer;
+                curWeight += truck_weights[index];
+                q.addLast(index++);
+            }
+        }
+        return answer + bridge_length;
+    }
+}
