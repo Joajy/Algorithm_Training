@@ -1,0 +1,46 @@
+import java.util.*;
+
+class Solution {
+    
+    static int answer, n;
+    static final int[][] price = {{1, 1, 1},
+                                  {5, 1, 1},
+                                  {25,5, 1}};
+    
+    public int solution(int[] picks, String[] minerals) {
+        answer = Integer.MAX_VALUE;
+        n = minerals.length;
+        mining(0, picks, minerals, 0, minerals.length);
+        return answer;
+    }
+    
+    static void mining(int index, int[] picks, String[] minerals, int value, int count) {
+        if(index >= n) {
+            if(count <= 0) answer = Math.min(answer, value);
+            return;
+        }
+        if(picks[0] == picks[1] && picks[1] == picks[2] && picks[2] == 0) {
+            answer = Math.min(answer, value);
+        }
+        for(int p = 0; p < 3; ++p) {
+            if(picks[p] == 0) continue;
+            --picks[p];
+            int toNext = value, cnt = 0;
+            for(int i = index; i < Math.min(index + 5, n); ++i) {
+                int mineral = mValue(minerals[i]);
+                toNext += price[p][mineral];
+                ++cnt;
+            }
+            mining(index + 5, picks, minerals, toNext, count - cnt);
+            ++picks[p];
+        }
+        mining(index + 5, picks, minerals, value, count);
+    }
+    
+    static int mValue(String mineral) {
+        if(mineral.equals("diamond")) return 0;
+        else if(mineral.equals("iron")) return 1;
+        return 2;
+    }
+    
+}
