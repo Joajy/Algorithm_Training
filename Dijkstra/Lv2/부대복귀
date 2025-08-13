@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    
+    static List<Integer>[] edges;
+    static int[] dist;
+    static class Info {
+        int v, d;
+        Info(int v, int d) {
+            this.v = v;
+            this.d = d;
+        }
+    }
+    
+    public int[] solution(int n, int[][] roads, int[] sources, int destination) {
+        int[] answer = new int[sources.length];
+        edges = new ArrayList[n + 1];
+        dist = new int[n + 1];
+        for(int i = 1; i <= n; ++i) {
+            edges[i] = new ArrayList<>();
+            dist[i] = (int)1e9;
+        }
+        dist[destination] = 0;
+        for(int[] road : roads) {
+            edges[road[0]].add(road[1]);
+            edges[road[1]].add(road[0]);
+        }
+        
+        PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.d, o2.d);
+        });
+        pq.add(new Info(destination, 0));
+        while(!pq.isEmpty()) {
+            Info cur = pq.poll();
+            for(int nxt : edges[cur.v]) {
+                if(dist[nxt] <= dist[cur.v] + 1) continue;
+                dist[nxt] = dist[cur.v] + 1;
+                pq.add(new Info(nxt, dist[nxt]));
+            }
+        }
+        for(int i = 0; i < sources.length; ++i) {
+            if(dist[sources[i]] == (int)1e9) answer[i] = -1;
+            else answer[i] = dist[sources[i]];
+        }
+        return answer;
+    }
+}
