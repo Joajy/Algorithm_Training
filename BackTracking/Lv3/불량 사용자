@@ -1,0 +1,54 @@
+import java.util.*;
+
+class Solution {
+    
+    static String[] user_id, banned_id;
+    static boolean[] visU, visB;
+    static int n, m;
+    static Set<Integer> answer;
+    
+    public int solution(String[] user_id, String[] banned_id) {
+        this.user_id = user_id;
+        this.banned_id = banned_id;
+        n = user_id.length;
+        m = banned_id.length;
+        answer = new HashSet<>();
+        visU = new boolean[n];
+        visB = new boolean[m];
+        rec(0, 0, 0);
+        return answer.size();
+    }
+    
+    static void rec(int idx, int index, int select) {
+        if(index == m) {
+            answer.add(select);
+            return;
+        }
+        for(int i = idx; i < n; ++i) {
+            if(visU[i]) continue;
+            visU[i] = true;
+            for(int j = 0; j < m; ++j) {
+                if(visB[j] || !isBanned(user_id[i], banned_id[j])) {
+                    rec(i + 1, index, select);
+                    continue;
+                }
+                visB[j] = true;
+                rec(i + 1, index + 1, select + (1 << i));
+                visB[j] = false;
+            }
+            visU[i] = false;
+        }
+    }
+    
+    static boolean isBanned(String user, String ban) {
+        //길이 다르면 제제 불가능
+        if(user.length() != ban.length()) return false;
+        for(int i = 0; i < ban.length(); ++i) {
+            char b = ban.charAt(i);
+            // *거나 또는 i번째 인덱스에서 같은 문자일 때
+            if(b == '*' || user.charAt(i) == b) continue;
+            return false;
+        }
+        return true;
+    }
+}
