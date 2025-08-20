@@ -1,0 +1,46 @@
+import java.util.*;
+
+class Solution {
+    
+    static class Info{
+        int v, cost;
+        Info(int v, int c) {
+            this.v = v;
+            cost = c;
+        }
+    };
+    static List<Info>[] edges;
+    static int[] dist;
+    
+    public int solution(int N, int[][] roads, int K) {
+        int answer = 0;
+        edges = new ArrayList[N + 1];
+        dist = new int[N + 1];
+        for(int i = 1; i <= N; ++i) {
+            edges[i] = new ArrayList<>();
+            dist[i] = (int)1e9;
+        }
+        for(int[] road : roads) {
+            edges[road[0]].add(new Info(road[1], road[2]));
+            edges[road[1]].add(new Info(road[0], road[2]));
+        }
+        dist[1] = 0;
+        PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.cost, o2.cost);
+        }
+        );
+        pq.add(new Info(1, 0));
+        while(!pq.isEmpty()) {
+            Info cur = pq.poll();
+            for(Info nxt : edges[cur.v]) {
+                if(dist[nxt.v] <= dist[cur.v] + nxt.cost) continue;
+                dist[nxt.v] = dist[cur.v] + nxt.cost;
+                pq.add(new Info(nxt.v, dist[nxt.v]));
+            }
+        }
+        for(int i = 1; i <= N; ++i) {
+            if(dist[i] <= K) ++answer;
+        }
+        return answer;
+    }
+}
