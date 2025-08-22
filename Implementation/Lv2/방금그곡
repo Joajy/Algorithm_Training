@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    public String solution(String m, String[] musicinfos) {
+        String answer = "";
+        int longestTime = 0;
+        m = convertSharp(m);
+        for(int i = 0; i < musicinfos.length; ++i) {
+            StringBuilder sb = new StringBuilder();
+            StringTokenizer st = new StringTokenizer(musicinfos[i], ",");
+            int duration = convertTime(st.nextToken(), st.nextToken());
+            String name = st.nextToken();
+            String melody = convertSharp(st.nextToken());
+            for(int j = 0; j < duration / melody.length(); ++j) {
+                sb.append(melody);
+            }
+            sb.append(melody.substring(0, duration % melody.length()));
+            if(!sb.toString().contains(m)) continue;
+            if(longestTime < sb.toString().length()) {
+                longestTime = sb.toString().length();
+                answer = name;
+            }
+        }
+        if(answer.isEmpty()) answer = "(None)";
+        return answer;
+    }
+    
+    //플레이시간 분 단위로 변환하기 위한 메서드
+    static int convertTime(String start, String end) {
+        int startTime = Integer.parseInt(start.substring(0, 2)) * 60 + 
+                        Integer.parseInt(start.substring(3));
+        int endTime = Integer.parseInt(end.substring(0, 2)) * 60 + 
+                        Integer.parseInt(end.substring(3));
+        return endTime - startTime;
+    }
+    
+    //같은 한 글자로 표현하기 위해 샵을 변환해준다
+    static String convertSharp(String m) {
+        return m.replace("A#", "a")
+                .replace("B#", "b")
+                .replace("C#", "c")
+                .replace("D#", "d")
+                .replace("E#", "e")
+                .replace("F#", "f")
+                .replace("G#", "g");
+    }
+}
