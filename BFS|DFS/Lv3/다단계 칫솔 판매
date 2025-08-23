@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Solution {
+    
+    static int n;
+    static int[] cost;
+    static List<String>[] ref;
+    static Map<String, Integer> list;
+        
+    public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
+        n = enroll.length;
+        int[] answer = new int[n];
+        cost = new int[n + 1];
+        ref = new ArrayList[n + 1];
+        list = new HashMap<>();
+        for(int i = 1; i <= n; ++i) {
+            ref[i] = new ArrayList<>();
+            list.put(enroll[i - 1], i);
+        }
+        //ref[i]가 자식, referral[i]가 부모
+        for(int i = 0; i < referral.length; ++i) {
+            if(referral[i].equals("-")) continue;
+            ref[i + 1].add(referral[i]);
+        }
+        for(int i = 0; i < amount.length; ++i) {
+            int value = amount[i] * 100;
+            Deque<String> q = new ArrayDeque<>();
+            q.add(seller[i]);
+            while(!q.isEmpty()) {
+                String cur = q.poll();
+                int index = list.get(cur);
+                cost[index] += value - (value / 10);
+                if(ref[index].isEmpty()) break;
+                q.add(ref[index].get(0));
+                value /= 10;
+                if(value == 0) break;
+            }
+        }
+        for(int i = 0; i < n; ++i) {
+            answer[i] = cost[i + 1];
+        }
+        return answer;
+    }
+}
