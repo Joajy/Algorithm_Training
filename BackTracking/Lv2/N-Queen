@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    
+    static int answer, n;
+    static int[] board;
+    
+    public int solution(int n) {
+        answer = 0;
+        this.n = n;
+        board = new int[n];
+        rec(0);
+        return answer;
+    }
+    
+    static void rec(int cnt) {
+        if(cnt == n) {
+            ++answer;
+            return;
+        }
+        for(int i = 0; i < n; ++i) {
+            board[cnt] = i;
+            if(isValid(cnt)) rec(cnt + 1);
+        }
+    }
+    
+    static boolean isValid(int index) {
+        for(int i = 0; i < index; ++i) {
+            if(board[i] == board[index]) return false;
+            if(Math.abs(index - i) == Math.abs(board[index] - board[i])) return false;
+        }
+        return true;
+    }
+}
