@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    
+    // 사전 순서대로 배치 (d l r u)
+    static int[] dx = {1, 0, 0, -1};
+    static int[] dy = {0, -1, 1, 0};
+    static char[] move = {'d', 'l', 'r', 'u'};
+    static String answer;
+    static int n, m, r, c, k;
+    
+    public String solution(int n, int m, int x, int y, int r, int c, int k) {
+        answer = "impossible";
+        this.n = n;
+        this.m = m;
+        this.r = r;
+        this.c = c;
+        this.k = k;
+        dfs(0, x, y, "");
+        return answer;
+    }
+    
+    static int getDist(int x, int y) {
+        return Math.abs(r - x) + Math.abs(c - y);
+    }
+    
+    static void dfs(int moveCnt, int x, int y, String cmd) {
+        if(!answer.equals("impossible")) return;
+        int minDist = k - moveCnt;
+        if(minDist < getDist(x, y)) return;
+        if(minDist % 2 !=  getDist(x, y) % 2) return;
+        if(moveCnt == k) {
+            answer = cmd;
+            return;
+        }
+        for(int dir = 0; dir < 4; ++dir) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            if(nx < 1 || ny < 1 || nx > n || ny > m) continue;
+            dfs(moveCnt + 1, nx, ny, cmd + move[dir]);
+        }
+    }
+}
