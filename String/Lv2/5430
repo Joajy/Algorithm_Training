@@ -1,0 +1,72 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static String cmd;
+    static int n, start, end;
+    static int[] numbers;
+
+    static void input() throws IOException {
+        cmd = br.readLine();
+        n = Integer.parseInt(br.readLine());
+        start = 0;
+        end = n - 1;
+        String numberArr = br.readLine();
+        st = new StringTokenizer(numberArr.substring(1, numberArr.length() - 1), ",");
+        numbers = new int[n];
+        for(int i = 0; i < n; ++i) {
+            numbers[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    static void solution() {
+        boolean isReverse = false;
+        for (int i = 0; i < cmd.length(); ++i) {
+            char command = cmd.charAt(i);
+            if(command == 'R') {
+                // 반대로 뒤집는 함수
+                isReverse = !isReverse;
+            } else {
+                // 만약 배열에 남은 수가 없다면 즉시 에러처리
+                if(start > end) {
+                    sb.append("error\n");
+                    return;
+                }
+                // 첫 번째 수를 버리는 함수
+                // 정상 상태일 때
+                if(!isReverse) {
+                    ++start;
+                } else {
+                    // 뒤집혀 있는 상태일 때
+                    --end;
+                }
+            }
+        }
+        sb.append('[');
+        if(!isReverse) {
+            for(int i = start; i <= end; ++i) {
+                sb.append(numbers[i]);
+                if(i != end) sb.append(',');
+            }
+        } else {
+            for(int i = end; i >= start; --i) {
+                sb.append(numbers[i]);
+                if(i != start) sb.append(',');
+            }
+        }
+        sb.append(']').append('\n');
+    }
+
+    public static void main(String[] args) throws IOException {
+        int t = Integer.parseInt(br.readLine());
+        for(int i = 0; i < t; ++i) {
+            input();
+            solution();
+        }
+        System.out.print(sb);
+    }
+}
