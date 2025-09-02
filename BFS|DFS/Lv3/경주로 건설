@@ -1,0 +1,63 @@
+import java.util.*;
+
+class Solution {
+    
+    static final int[] dx = {0, 1, 0 ,-1};
+    static final int[] dy = {1, 0, -1, 0};
+    static class Info{
+        int x, y, dir;
+        Info(int x, int y, int dir) {
+            this.x = x;
+            this.y = y;
+            this.dir = dir;
+        }
+    }
+    static int n;
+    static int[][][] cost;
+    
+    public int solution(int[][] board) {
+        int answer = Integer.MAX_VALUE;
+        n = board.length;
+        cost = new int[n][n][4];
+        for(int i = 0; i < n; ++i) {
+            for(int j = 0; j < n; ++j) {
+                Arrays.fill(cost[i][j], (int)2e9);
+            }
+        }
+        for(int dir = 0; dir < 2; ++dir) {
+            cost[0][0][dir] = 0;
+        }
+        bfs(board);
+        for(int dir = 0; dir < 4; ++dir) {
+            answer = Math.min(answer, cost[n - 1][n - 1][dir]);
+        }
+        return answer;
+    }
+    
+    static void bfs(int[][] board){
+        Deque<Info> q = new ArrayDeque<>();
+        //우, 하 방향으로 시작해야 하므로 두 가지만 넣는다
+        for(int dir = 0; dir < 4; ++dir) {
+            q.add(new Info(0, 0, dir));
+        }
+        //cost[x][y][dir] -> x, y로 들어왔던 dir에 대한 cost
+        while(!q.isEmpty()) {
+            Info cur = q.poll();
+            for(int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                // 범위를 벗어나거나 벽에 가로막힐 경우 생략
+                if(outRange(nx, ny) || board[nx][ny] == 1) continue;
+                // 코너를 돌아야하면 100+500, 직선도로라면 100
+                int adder = (dir == cur.dir ? 100 : 600);
+                if(cost[cur.x][cur.y][cur.dir] + adder >= cost[nx][ny][dir]) continue;
+                cost[nx][ny][dir] = cost[cur.x][cur.y][cur.dir] + adder;
+                q.add(new Info(nx, ny, dir));
+            }
+        }
+    }
+    
+    static boolean outRange(int x, int y) {
+        return x < 0 || y < 0 || x >= n || y >= n;
+    }
+}
