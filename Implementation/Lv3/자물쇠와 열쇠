@@ -1,0 +1,77 @@
+class Solution {
+    
+    static int n, m, lockSize;
+    static class Point {
+        int x, y;
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    static int[][] key, lock;
+    
+    public boolean solution(int[][] key, int[][] lock) {
+        n = lock.length;
+        m = key.length;
+        this.key = key;
+        this.lock = lock;
+        lockSize = 0;
+        getLockSize();
+        return findRoot();
+    }
+    
+    static boolean findRoot() {
+        for(int i = - m + 1; i < n + m; ++i) {
+            for(int j = - m + 1; j < n + m; ++j) {
+                for(int dir = 0; dir < 4; ++dir) {
+                    if(isCorrect(i, j, dir)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    //현재 lock에서 x, y의 위치에서 dir회전에 맞게 대조
+    static boolean isCorrect(int x, int y, int dir) {
+        int count = 0;
+        for(int i = 0; i < m; ++i) {
+            for(int j = 0; j < m; ++j) {
+                Point converted = convertPoint(i, j, dir);
+                int nx = x + converted.x;
+                int ny = y + converted.y;
+                //범위 벗어나거나 key가 홈일 때
+                if(outLockRange(nx, ny)) continue;
+                if(key[i][j] == 0) continue;
+                //키와 자물쇠가 둘 다 돌기일 때
+                if(lock[nx][ny] == 1 && key[i][j] == 1) return false;
+                ++count;
+            }
+        }
+        if(count == lockSize) return true;
+        return false;
+    }
+    
+    static Point convertPoint(int x, int y, int dir) {
+        switch (dir) {
+            case 1: return new Point(y, m - 1 - x);
+            case 2: return new Point(m - 1 - x, m - 1 - y);
+            case 3: return new Point(m - 1 - y, x);
+            default: return new Point(x, y);
+        }
+    }
+    
+    static boolean outLockRange(int x, int y) {
+        return x < 0 || y < 0 || x >= n || y >= n;
+    }
+    
+    static void getLockSize() {
+        for(int i = 0; i < n; ++i) {
+            for(int j = 0; j < n; ++j) {
+                if(lock[i][j] == 1) continue;
+                ++lockSize;
+            }
+        }
+    }
+}
