@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public int solution(String s) {
+        int answer = s.length();
+        for(int i = 1; i <= (s.length() >> 1); ++i) {
+            answer = Math.min(answer, getLength(s, i));
+        }
+        return answer;
+    }
+    
+    static int getLength(String s, int len) {
+        StringBuilder sb = new StringBuilder();
+        String beforeStr = s.substring(0, len);
+        int count = 0, i;
+        for(i = len; i < s.length(); i+=len) {
+            String curStr = s.substring(i, Math.min(i + len, s.length()));
+            // 현재 문자열이 직전 문자열과 동일할 경우(i ~ i+len, i+len ~ i+len*2)
+            if(curStr.equals(beforeStr)) ++count;
+            else {
+                if(count > 0) sb.append(count + 1);
+                sb.append(beforeStr);
+                beforeStr = curStr;
+                count = 0;
+            }
+        }
+        if(count > 0) sb.append(count + 1);
+        sb.append(beforeStr);
+        return sb.toString().length();
+    }
+}
