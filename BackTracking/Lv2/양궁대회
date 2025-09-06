@@ -1,0 +1,51 @@
+import java.util.*;
+
+class Solution {
+    
+    static int maxScore, n;
+    static int[] answer, counts;
+    
+    public int[] solution(int n, int[] info) {
+        answer = new int[11];
+        counts = new int[11];
+        this.n = n;
+        maxScore = 0;
+        rec(0, n, info);
+        if(maxScore == 0) return new int[]{-1};
+        return answer;
+    }
+    
+    static boolean check() {
+        for(int i = 10; i > 0; --i) {
+            if(counts[i] > answer[i]) return true;
+            else if(counts[i] < answer[i]) return false;
+        }
+        return true;
+    }
+    
+    static void rec(int index, int restCnt, int[] info) {
+        if(restCnt < 0) return;
+        if(index == 11) {
+            int ryanScore = 0, apeachScore = 0;
+            for(int i = 0; i < 10; ++i) {
+                // 점수차 계산
+                if(info[i] == 0 && counts[i] == 0) continue;
+                if(info[i] < counts[i]) ryanScore += (10 - i);
+                else apeachScore += (10 - i);
+            }
+            // 점수차가 현재까지의 최대값보다 더 크거나 같을 경우
+            if(maxScore <= ryanScore - apeachScore) {
+                // 점수차가 현재까지의 최대값과 동일하며, 낮은 점수 명중이 더 많지 않은 경우 생략
+                if(maxScore == ryanScore - apeachScore && !check()) return;
+                answer = counts.clone();
+                answer[10] += restCnt;
+                maxScore = ryanScore - apeachScore;
+            }
+            return;
+        }
+        rec(index + 1, restCnt, info);
+        counts[index] = info[index] + 1;
+        rec(index + 1, restCnt - info[index] - 1, info);
+        counts[index] = 0;
+    }
+}
