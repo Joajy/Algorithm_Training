@@ -1,0 +1,66 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n, m, start, end;
+    static int[][] connected;
+    static List<Info>[] bridges;
+    static class Info {
+        int v, cost;
+        Info(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        bridges = new ArrayList[n + 1];
+        for(int i = 1; i <= n; ++i) {
+            bridges[i] = new ArrayList<>();
+        }
+        connected = new int[m][3];
+        for(int i = 0; i < m; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            bridges[a].add(new Info(b, c));
+            bridges[b].add(new Info(a, c));
+        }
+        st = new StringTokenizer(br.readLine());
+        start = Integer.parseInt(st.nextToken());
+        end = Integer.parseInt(st.nextToken());
+    }
+
+    static void solution() {
+        int[] dist = new int[n + 1];
+        PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o2.cost, o1.cost);
+        });
+        dist[start] = Integer.MAX_VALUE;
+        pq.add(new Info(start, dist[start]));
+        while(!pq.isEmpty()) {
+            Info cur = pq.poll();
+            if(dist[cur.v] > cur.cost) continue;
+            for(Info nxt : bridges[cur.v]) {
+                int minDist = Math.min(dist[cur.v], nxt.cost);
+                if(minDist <= dist[nxt.v]) continue;
+                dist[nxt.v] = minDist;
+                pq.add(new Info(nxt.v, dist[nxt.v]));
+            }
+        }
+        System.out.println(dist[end]);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
