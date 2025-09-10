@@ -1,0 +1,70 @@
+import java.util.*;
+
+class Solution {
+    
+    static int n, index;
+    static class Node {
+        int x, y, number;
+        Node left, right;
+        Node(){};
+        Node(int x, int y, int number) {
+            this.x = x;
+            this.y = y;
+            this.number = number;
+        }
+    }
+    static Node head;
+    static int[][] answer;
+    
+    public int[][] solution(int[][] nodeinfo) {
+        n = nodeinfo.length;
+        answer = new int[2][n];
+        // 1. 노드 기본 정보 저장
+        Node[] nodes = new Node[n];
+        for(int i = 0; i < n; ++i) {
+            nodes[i] = new Node(nodeinfo[i][0], nodeinfo[i][1], i + 1);
+        }
+        // 2. 노드 정렬하여 위에서부터 아래로 자식관계 형성할 수 있도록 한다
+        Arrays.sort(nodes, (o1, o2) -> {
+            if(o1.y == o2.y) {
+                return Integer.compare(o1.x, o2.x);
+            }
+            return Integer.compare(o2.y, o1.y);
+        });
+        // 3. 0번째를 루트 노드로, 1부터 n - 1까지 탐색하며 자식관계 형성
+        head = nodes[0];
+        for(int i = 1; i < n; ++i) {
+            insert(head, nodes[i]);
+        }
+        index = 0;
+        preorder(head);
+        index = 0;
+        postorder(head);
+        return answer;
+    }
+    
+    static void insert(Node parent, Node child) {
+        //1. x값 따라 좌측 우측 나눈다
+        if(parent.x < child.x) {
+            if(parent.right == null) parent.right = child;
+            else insert(parent.right, child);
+        } else {
+            if(parent.left == null) parent.left = child;
+            else insert(parent.left, child);
+        }
+    }
+    
+    static void preorder(Node cur) {
+        if(cur == null) return;
+        answer[0][index++] = cur.number;
+        preorder(cur.left);
+        preorder(cur.right);
+    }
+    
+    static void postorder(Node cur) {
+        if(cur == null) return;
+        postorder(cur.left);
+        postorder(cur.right);
+        answer[1][index++] = cur.number;
+    }
+}
