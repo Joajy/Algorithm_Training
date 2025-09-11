@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    
+    static int n;
+    static Set<Integer> candidateKey;
+    
+    public int solution(String[][] relation) {
+        n = relation[0].length;
+        candidateKey = new HashSet<>();
+        rec(relation, 0, 0);
+        return candidateKey.size();
+    }
+
+    static void rec(String[][] relation, int index, int key) {
+        if(index < n) {
+            rec(relation, index + 1, key);
+            rec(relation, index + 1, key + (1 << index));
+            return;
+        }
+        for(int c : candidateKey) {
+            if((c & key) == c) return;
+        }
+        Set<String> set = new HashSet<>();
+        boolean possible = true;
+        for(String[] r : relation) {
+            StringBuilder sb = new StringBuilder("");
+            for(int i = 0; i < r.length; ++i) {
+                if((key & (1 << i)) == 0) continue;
+                sb.append(r[i]);
+            }
+            if(set.contains(sb.toString())) {
+                possible = false;
+                break;
+            }
+            set.add(sb.toString());
+        }
+        if(possible) {
+            candidateKey.add(key);
+            return;
+        }
+    }
+}
