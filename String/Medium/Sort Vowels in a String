@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+
+    static StringBuilder sb;
+    static List<String> toCompare;
+    static List<Integer> indexes, clone;
+    static int cur;
+
+    public String sortVowels(String s) {
+        sb = new StringBuilder();
+        toCompare = new ArrayList<>(Arrays.asList("A", "I", "E", "O", "U", "a", "i", "e", "o", "u"));
+        indexes = new ArrayList<>();
+        for(int i = 0; i < s.length(); ++i) {
+            if(toCompare.contains(s.charAt(i)+"")) indexes.add(i);
+        }
+        if(indexes.isEmpty()) return s;
+        clone = new ArrayList<>(indexes);
+        sorting(s);
+        return sb.toString();
+    }
+
+    void sorting(String s) {
+        Integer[] idxList = new Integer[indexes.size()];
+        for(int i = 0; i < idxList.length; ++i) {
+            idxList[i] = indexes.get(i);
+        }
+        Arrays.sort(idxList, (o1, o2) -> {
+            return Integer.compare(s.charAt(o1), s.charAt(o2));
+        });
+        int cur = 0, idx = 0;
+        for(int i : clone) {
+            sb.append(s.substring(cur, i));
+            sb.append(s.charAt(idxList[idx++]));
+            cur = i + 1;
+        }
+        sb.append(s.substring(cur));
+    }
+}
