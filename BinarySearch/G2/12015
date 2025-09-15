@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n;
+    static int[] a;
+    static List<Integer> answer = new ArrayList<>();
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        a = new int[n];
+        st = new StringTokenizer(br.readLine());
+        for(int i = 0; i < n; ++i) {
+            a[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    static void solution() {
+        for(int i = 0; i < n; ++i) {
+            if(answer.isEmpty()) {
+                answer.add(a[i]);
+                continue;
+            }
+            if(answer.get(answer.size() - 1) < a[i]) answer.add(a[i]);
+            else binarySearch(a[i]);
+        }
+        System.out.println(answer.size());
+    }
+
+    static void binarySearch(int number) {
+        int s = 0, e = answer.size() - 1;
+        while(s <= e) {
+            int mid = (s + e) >> 1;
+            if(answer.get(mid) < number) {
+                s = mid + 1;
+            } else if(answer.get(mid) > number) {
+                e = mid - 1;
+            } else {
+                return;
+            }
+        }
+        answer.set(s, number);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
