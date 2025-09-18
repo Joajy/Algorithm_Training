@@ -1,0 +1,30 @@
+class Solution {
+
+    final int MOD = (int)1e9 + 7;
+    final int[] dx = {0, 1, 0, -1};
+    final int[] dy = {1, 0, -1, 0};
+    int[][] dp;
+
+    public int findPaths(int n, int m, int maxMove, int sR, int sC) {
+        int answer = 0;
+        dp = new int[n + 2][m + 2];
+        dp[sR + 1][sC + 1] = 1;
+        for(int i = 1; i <= maxMove; ++i) {
+            int[][] temp = new int[n + 2][m + 2];
+            for(int x = 1; x <= n; ++x) {
+                for(int y = 1; y <= m; ++y) {
+                    if(x == 1) answer = (answer + dp[x][y]) % MOD;
+                    if(y == 1) answer = (answer + dp[x][y]) % MOD;
+                    if(x == n) answer = (answer + dp[x][y]) % MOD;
+                    if(y == m) answer = (answer + dp[x][y]) % MOD;
+                    for(int dir = 0; dir < 4; ++dir) {
+                        temp[x][y] += dp[x + dx[dir]][y + dy[dir]];
+                        temp[x][y] %= MOD;
+                    }
+                }
+            }
+            dp = temp;
+        }
+        return answer;
+    }
+}
