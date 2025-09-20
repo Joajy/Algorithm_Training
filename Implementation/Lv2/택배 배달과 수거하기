@@ -1,0 +1,76 @@
+import java.util.*;
+
+class Solution {
+    
+    static class Info {
+        int index, amount;
+        Info(int i, int a) {
+            index = i;
+            amount = a;
+        }
+    }
+    static List<Info> d = new ArrayList<>();
+    static List<Info> p = new ArrayList<>();
+    
+    public long solution(int cap, int n, int[] deliveries, int[] pickups) {
+        long answer = 0;
+        for(int i = 0; i < n; ++i) {
+            if(deliveries[i] > 0) {
+                d.add(new Info(i, deliveries[i]));
+            }
+            if(pickups[i] > 0) {
+                p.add(new Info(i, pickups[i]));
+            }
+        }
+        int dIdx = d.size() - 1;
+        int pIdx = p.size() - 1;
+        // 배달 위치보다 픽업 위치가 더 뒤에 있더라도, 배달은 결국 다 주고 픽업을 가지러 가는 순서가 일반적
+        while(dIdx >= 0) {
+            int count = cap;
+            int curIdx = d.get(dIdx).index;
+            //배달 다 해주고
+            while(dIdx >= 0) {
+                Info cur = d.get(dIdx);
+                //dIdx에 줄 거 다 담을 수 있음
+                if(count >= cur.amount) {
+                    count -= cur.amount;
+                    --dIdx;
+                } else {
+                    d.set(dIdx, new Info(cur.index, cur.amount - count));
+                    break;
+                }
+            }
+            //픽업하고
+            count = cap;
+            if(pIdx >= 0) curIdx = Math.max(curIdx, p.get(pIdx).index);
+            while(pIdx >= 0) {
+                Info cur = p.get(pIdx);
+                //dIdx에 줄 거 다 담을 수 있음
+                if(count >= cur.amount) {
+                    count -= cur.amount;
+                    --pIdx;
+                } else {
+                    p.set(pIdx, new Info(cur.index, cur.amount - count));
+                    break;
+                }
+            }
+            answer += (curIdx + 1) << 1;
+        }
+        while(pIdx >= 0) {
+            int count = cap;
+            int curIdx = pIdx;
+            answer += (p.get(pIdx).index + 1) << 1;
+            while(pIdx >= 0) {
+                Info cur = p.get(pIdx);
+                if(count >= cur.amount) {
+                    count -= cur.amount;
+                    --pIdx;
+                } else {
+                    p.set(pIdx, new Info(cur.index, cur.amount - count));
+                    break;
+                }
+            }
+        }
+        return answer;
+    }
+}
