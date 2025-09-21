@@ -1,0 +1,18 @@
+-- sum으로 카운팅한 것
+select customer_id
+  from customer_transactions
+ group by customer_id
+   having sum(transaction_type = 'purchase') >= 3
+      and sum(transaction_type = 'refund') * 5 < count(*)
+      and datediff(max(transaction_date), min(transaction_date)) >= 30
+ order by customer_id
+
+-- count 내에서 case when then else end로 카운팅한 것
+-- 이 때, else 0로 하면 0으로 된 row값을 카운팅하기 때문에 null로 지정해야 카운팅되지 않는다
+select customer_id
+  from customer_transactions
+ group by customer_id
+   having count(case when transaction_type = 'purchase' then 10000 else null end) >= 3
+      and count(case when transaction_type = 'refund' then 1 else null end) * 5 < count(*)
+      and datediff(max(transaction_date), min(transaction_date)) >= 30
+ order by customer_id
