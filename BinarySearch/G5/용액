@@ -1,0 +1,54 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n, a1, a2;
+    static int[] liq;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        liq = new int[n];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; ++i) {
+            liq[i] = Integer.parseInt(st.nextToken());
+        }
+        //a1: min, a2: max
+        a1 = (int)1e9;
+        a2 = (int)1e9;
+    }
+
+    static void binarySearch(int start) {
+        int s = start + 1, e = n - 1;
+        while (s <= e) {
+            int mid = (s + e) >> 1;
+            int sum = liq[start] + liq[mid];
+            if(Math.abs(sum) < Math.abs(a1 + a2)) {
+                a1 = liq[start];
+                a2 = liq[mid];
+            }
+            if (sum < 0) {
+                s = mid + 1;
+            } else {
+                e = mid - 1;
+            }
+        }
+    }
+
+    static void solution() {
+        Arrays.sort(liq);
+        for (int i = 0; i < n; ++i) {
+            binarySearch(i);
+            if(a1 + a2 == 0) break;
+        }
+        System.out.println(a1 + " " + a2);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
