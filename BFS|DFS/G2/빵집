@@ -1,0 +1,67 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int r, c, answer;
+    static char[][] area;
+    static boolean[][] vis;
+    static final int[] dx = {-1, 0, 1};
+    static final int[] dy = {1, 1, 1};
+    static class Info {
+        int x, y;
+        Info(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        r = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
+        area = new char[r][c];
+        vis = new boolean[r][c];
+        for (int i = 0; i < r; ++i) {
+            String s = br.readLine();
+            for (int j = 0; j < c; ++j) {
+                area[i][j] = s.charAt(j);
+            }
+        }
+        answer = 0;
+    }
+
+    static boolean setPipeline(int x, int y) {
+        if(y == c - 1) {
+            ++answer;
+            return true;
+        }
+        for (int dir = 0; dir < 3; ++dir) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            if(outRange(nx, ny) || vis[nx][ny]) continue;
+            if(area[nx][ny] == 'x') continue;
+            vis[nx][ny] = true;
+            if(setPipeline(nx, ny)) return true;
+        }
+        return false;
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x >= r || y < 0 || y >= c;
+    }
+
+    static void solution() {
+        for (int i = 0; i < r; ++i) {
+            setPipeline(i, 0);
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
