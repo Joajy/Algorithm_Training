@@ -1,0 +1,47 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n;
+    static int[] a, ngf, freq;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        a = new int[n + 1];
+        ngf = new int[n + 1];
+        freq = new int[1_000_001];
+        st =  new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; ++i) {
+            a[i] = Integer.parseInt(st.nextToken());
+            ++freq[a[i]];
+        }
+    }
+
+    static void solution() {
+        Arrays.fill(ngf, -1);
+        Deque<Integer> q = new ArrayDeque<>();
+        for(int i = 1; i <= n; ++i) {
+            while(!q.isEmpty()) {
+                int cur = q.peekLast();
+                if(freq[a[cur]] < freq[a[i]]) {
+                    ngf[cur] = a[i];
+                    q.pollLast();
+                } else break;
+            }
+            q.add(i);
+        }
+        for (int i = 1; i <= n; ++i) {
+            sb.append(ngf[i]).append(" ");
+        }
+        System.out.println(sb.toString());
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
