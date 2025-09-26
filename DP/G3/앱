@@ -1,0 +1,51 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m;
+    static int[] mem, cost;
+    static int[][] dp;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        mem = new int[n + 1];
+        cost = new int[n + 1];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; ++i) {
+            mem[i] = Integer.parseInt(st.nextToken());
+        }
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; ++i) {
+            cost[i] = Integer.parseInt(st.nextToken());
+        }
+        dp = new int[n + 1][10001];
+    }
+
+    static void solution() {
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 0; j < cost[i]; ++j) {
+                dp[i][j] = dp[i - 1][j];
+            }
+            for (int j = cost[i]; j <= 10000; ++j) {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - cost[i]] + mem[i]);
+            }
+        }
+        int answer = Integer.MAX_VALUE;
+        for(int i = 1; i <= n; ++i) {
+            for (int j = 0; j <= 10000; ++j) {
+                if(dp[i][j] >= m && dp[i][j] != Integer.MAX_VALUE) answer = Math.min(answer, j);
+            }
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
