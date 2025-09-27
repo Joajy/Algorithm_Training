@@ -1,0 +1,59 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static String s;
+    static List<Integer> len;
+
+    static void input() throws IOException {
+        s = br.readLine();
+        len = new ArrayList<>();
+    }
+
+    static boolean isPossible() {
+        int count = 0;
+        for(int i = 0; i < s.length(); ++i) {
+            if(s.charAt(i) == '.') {
+                if(count % 2 != 0) return false;
+                len.add(count);
+                count = 0;
+            } else {
+                ++count;
+            }
+        }
+        if(count > 0){
+            if(count % 2 != 0) return false;
+            len.add(count);
+        }
+        return true;
+    }
+
+    static void solution() {
+        if(!isPossible()) {
+            System.out.println(-1);
+            return;
+        }
+        for(int i = 0; i < len.size(); ++i) {
+            int count = len.get(i);
+            for (int j = 0; j < count / 4; ++j) {
+                sb.append("AAAA");
+            }
+            for(int j = 0; j < count % 4; j+=2) {
+                sb.append("BB");
+            }
+            if(i != len.size() - 1) sb.append(".");
+        }
+        if (s.charAt(s.length() - 1) == '.') {
+            sb.append(".");
+        }
+        System.out.println(sb.toString());
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
