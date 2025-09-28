@@ -1,0 +1,60 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static int[][] a;
+    static long[][] dp;
+    static final int[] dx = {0, 1};
+    static final int[] dy = {1, 0};
+    static class Info {
+        int x, y;
+        Info(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        a = new int[n][n];
+        dp = new long[n][n];
+        for (int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; ++j) {
+                a[i][j] = Integer.parseInt(st.nextToken());
+                dp[i][j] = -1;
+            }
+        }
+        dp[n - 1][n - 1] = 1;
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x >= n || y < 0 || y >= n;
+    }
+
+    static long search(int x, int y) {
+        if(dp[x][y] != -1) return dp[x][y];
+        dp[x][y] = 0;
+        for (int dir = 0; dir < 2; ++dir) {
+            int nx = x + dx[dir] * a[x][y];
+            int ny = y + dy[dir] * a[x][y];
+            if(outRange(nx, ny)) continue;
+            dp[x][y] += search(nx, ny);
+        }
+        return dp[x][y];
+    }
+
+    static void solution() {
+        search(0, 0);
+        System.out.println(dp[0][0]);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
