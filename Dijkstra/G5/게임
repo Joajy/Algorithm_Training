@@ -1,0 +1,90 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n, m;
+    static int[][] area, life;
+    static class Info {
+        int x, y, point;
+        Info(int x, int y, int point) {
+            this.x = x;
+            this.y = y;
+            this.point = point;
+        }
+    }
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {-1, 0, 1, 0};
+
+    static void input() throws IOException {
+        area = new int[501][501];
+        life = new int[501][501];
+        n = Integer.parseInt(br.readLine());
+        for(int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int x1 = Integer.parseInt(st.nextToken());
+            int y1 = Integer.parseInt(st.nextToken());
+            int x2 = Integer.parseInt(st.nextToken());
+            int y2 = Integer.parseInt(st.nextToken());
+            for(int x = Math.min(x1, x2); x <= Math.max(x1, x2); ++x) {
+                for(int y = Math.min(y1, y2); y <= Math.max(y1, y2); ++y) {
+                    area[x][y] = 1;
+                }
+            }
+        }
+        m = Integer.parseInt(br.readLine());
+        for(int i = 0; i < m; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int x1 = Integer.parseInt(st.nextToken());
+            int y1 = Integer.parseInt(st.nextToken());
+            int x2 = Integer.parseInt(st.nextToken());
+            int y2 = Integer.parseInt(st.nextToken());
+            for(int x = Math.min(x1, x2); x <= Math.max(x1, x2); ++x) {
+                for(int y = Math.min(y1, y2); y <= Math.max(y1, y2); ++y) {
+                    area[x][y] = 2;
+                }
+            }
+        }
+        for (int i = 0; i <= 500; ++i) {
+            Arrays.fill(life[i], Integer.MAX_VALUE);
+        }
+        life[0][0] = 0;
+    }
+
+    //1: 위험, 2: 죽음
+    static void solution() {
+        Deque<Info> q = new ArrayDeque<>();
+        q.add(new Info(0, 0, 0));
+        while(!q.isEmpty()) {
+            Info cur = q.poll();
+            for (int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                if(outRange(nx, ny) || area[nx][ny] == 2) continue;
+                if(area[nx][ny] == 0) {
+                    if(life[cur.x][cur.y] >= life[nx][ny]) continue;
+                    life[nx][ny] = life[cur.x][cur.y];
+                    q.add(new Info(nx, ny, life[nx][ny]));
+                } else {
+                    if(life[cur.x][cur.y] + 1 >= life[nx][ny]) continue;
+                    life[nx][ny] = life[cur.x][cur.y] + 1;
+                    q.add(new Info(nx, ny, life[nx][ny]));
+                }
+            }
+        }
+        if(life[500][500] == Integer.MAX_VALUE) life[500][500] = -1;
+        System.out.println(life[500][500]);
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x > 500 || y < 0 || y > 500;
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
