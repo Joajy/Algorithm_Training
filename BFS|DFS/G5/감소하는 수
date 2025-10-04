@@ -1,0 +1,43 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+    }
+
+    //1: 위험, 2: 죽음
+    static void solution() {
+        if(n < 10) {
+            System.out.println(n);
+            return;
+        }
+        Deque<Long> q = new ArrayDeque<>();
+        for (long i = 1; i <= 9; ++i) {
+            q.addLast(i);
+        }
+        while(!q.isEmpty()) {
+            long cur = q.poll();
+            if(--n == 0) {
+                System.out.println(cur);
+                return;
+            }
+            for(int i = 0; i < 9; ++i) {
+                if(cur % 10 == i) break;
+                q.addLast(cur * 10 + i);
+            }
+        }
+        System.out.println(-1);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
