@@ -1,0 +1,91 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int a, b, c;
+    static boolean[][] vis;
+
+    static class Info {
+        int x, y, z;
+
+        Info(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+    }
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        a = Integer.parseInt(st.nextToken());
+        b = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
+        vis = new boolean[1550][1550];
+    }
+
+    static void solution() {
+        if ((a + b + c) % 3 != 0) {
+            System.out.println(0);
+            return;
+        }
+        Deque<Info> q = new ArrayDeque<>();
+        q.add(new Info(a, b, c));
+        vis[a][b] = true;
+        while (!q.isEmpty()) {
+            Info cur = q.poll();
+            if (cur.x == cur.y && cur.x == cur.z) {
+                System.out.println(1);
+                return;
+            }
+            if (cur.x != cur.y) {
+                if (cur.x < cur.y) {
+                    cur.y -= cur.x;
+                    cur.x += cur.x;
+                } else {
+                    cur.x -= cur.y;
+                    cur.y += cur.y;
+                }
+                if (!vis[cur.x][cur.y]) {
+                    vis[cur.x][cur.y] = true;
+                    q.add(new Info(cur.x, cur.y, cur.z));
+                }
+            }
+            if (cur.y != cur.z) {
+                if (cur.y < cur.z) {
+                    cur.z -= cur.y;
+                    cur.y += cur.y;
+                } else {
+                    cur.y -= cur.z;
+                    cur.z += cur.z;
+                }
+                if (!vis[cur.y][cur.z]) {
+                    vis[cur.y][cur.z] = true;
+                    q.add(new Info(cur.x, cur.y, cur.z));
+                }
+            }
+            if (cur.x != cur.z) {
+                if (cur.x < cur.z) {
+                    cur.z -= cur.x;
+                    cur.x += cur.x;
+                } else {
+                    cur.x -= cur.z;
+                    cur.z += cur.z;
+                }
+                if (!vis[cur.x][cur.z]) {
+                    vis[cur.x][cur.z] = true;
+                    q.add(new Info(cur.x, cur.y, cur.z));
+                }
+            }
+        }
+        System.out.println(0);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
