@@ -1,0 +1,55 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n;
+    static double answer;
+    static double[] probability;
+    static final int[] dx = {0, 0, 1, -1};
+    static final int[] dy = {1, -1, 0, 0};
+    static boolean[][] vis;
+
+    static void input() throws IOException {
+        vis = new boolean[31][31];
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        probability = new double[4];
+        for (int i = 0; i < 4; ++i) {
+            probability[i] = (Double.parseDouble(st.nextToken()) / 100);
+        }
+        answer = 0;
+    }
+
+    static void move(int index, int x, int y, double prob) {
+        if (index == n) {
+            return;
+        }
+        for (int dir = 0; dir < 4; ++dir) {
+            if(probability[dir] == 0) continue;
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+            if(vis[nx][ny]) {
+                answer += prob * probability[dir];
+                continue;
+            }
+            vis[nx][ny] = true;
+            move(index + 1, nx, ny, prob * probability[dir]);
+            vis[nx][ny] = false;
+        }
+    }
+
+    static void solution() {
+        vis[15][15] = true;
+        move(0, 15, 15, 1);
+        System.out.println(1 - answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
