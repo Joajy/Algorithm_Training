@@ -1,0 +1,76 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int v;
+    static class Info {
+        int v, cost;
+        Info(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+    static List<Info>[] edges;
+    static int[] dist;
+
+    static void input() throws IOException {
+        v = Integer.parseInt(br.readLine());
+        dist = new int[v + 1];
+        edges = new ArrayList[v + 1];
+        for (int i = 1; i <= v; ++i) {
+            edges[i] = new ArrayList<>();
+        }
+        for (int i = 1; i <= v; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int number = Integer.parseInt(st.nextToken());
+            while(st.hasMoreTokens()) {
+                int vertex = Integer.parseInt(st.nextToken());
+                if(vertex == -1) break;
+                int cost = Integer.parseInt(st.nextToken());
+                edges[number].add(new Info(vertex, cost));
+            }
+        }
+    }
+
+    static int dfs(int start) {
+        boolean[] vis = new boolean[v + 1];
+        Deque<Info> q = new ArrayDeque<>();
+        q.add(new Info(start, 0));
+        vis[start] = true;
+        while(!q.isEmpty()) {
+            Info cur = q.poll();
+            for(Info nxt : edges[cur.v]) {
+                int nxtV = nxt.v;
+                int nxtCost = nxt.cost;
+                if(vis[nxtV]) continue;
+                if(nxtCost + dist[cur.v] <= dist[nxtV]) continue;
+                vis[nxtV] = true;
+                dist[nxtV] = nxtCost + dist[cur.v];
+                q.add(new Info(nxtV, dist[nxtV]));
+            }
+        }
+        int answer = 0;
+        for (int i = 1; i <= v; ++i) {
+            if(dist[answer] < dist[i]) answer = i;
+        }
+        return answer;
+    }
+
+    static void solution() {
+        // 트리 구조라는 것이 전제되기 때문에, 임의의 한 노드(x)로부터 트리 탐색하여 x노드로부터 가장 먼 거리에 있는 노드를 탐색
+        int answer = 0;
+        int v1 = dfs(1);
+        Arrays.fill(dist, 0);
+        int v2 = dfs(v1);
+        answer = dist[v2];
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
