@@ -1,0 +1,64 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, answer;
+    static char[][] area;
+    static int[][] dp;
+    static boolean[][] vis;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {-1, 0, 1, 0};
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        area = new char[n][m];
+        dp = new int[n][m];
+        vis = new boolean[n][m];
+        for (int i = 0; i < n; ++i) {
+            String s = br.readLine();
+            for (int j = 0; j < m; ++j) {
+                area[i][j] = s.charAt(j);
+            }
+        }
+        answer = 0;
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x >= n || y < 0 || y >= m;
+    }
+
+    static int rec(int x, int y) {
+        if(answer == -1) return -1;
+        if(dp[x][y] != 0) return dp[x][y];
+        int mul = area[x][y] - '0';
+        vis[x][y] = true;
+        for (int dir = 0; dir < 4; ++dir) {
+            int nx = x + dx[dir] * mul;
+            int ny = y + dy[dir] * mul;
+            if (outRange(nx, ny) || area[nx][ny] == 'H') {
+                dp[x][y] = Math.max(dp[x][y], 1);
+                continue;
+            }
+            if(vis[nx][ny]) return answer = -1;
+            dp[x][y] = Math.max(dp[x][y], rec(nx, ny) + 1);
+        }
+        vis[x][y] = false;
+        return dp[x][y];
+    }
+
+    static void solution() {
+        rec(0, 0);
+        if(answer == -1) System.out.println(-1);
+        else System.out.println(dp[0][0]);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
