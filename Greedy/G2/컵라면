@@ -1,0 +1,67 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n;
+    static Info[] hw;
+    static class Info {
+        int d, c;
+        public Info(int d, int c) {
+            this.d = d;
+            this.c = c;
+        }
+    }
+
+    //https://www.acmicpc.net/problem/1826
+    //https://www.acmicpc.net/problem/1939
+    //https://www.acmicpc.net/problem/13325
+    //https://www.acmicpc.net/problem/14621
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        hw = new Info[n];
+        for (int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int d = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            hw[i] = new Info(d, c);
+        }
+    }
+
+    static void solution() {
+        Arrays.sort(hw, (o1, o2) -> {
+            if (o1.d == o2.d) {
+                return Integer.compare(o2.c, o1.c);
+            }
+            return Integer.compare(o1.d, o2.d);
+        });
+        PriorityQueue<Info> q = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.c, o2.c);
+        });
+        q.add(hw[0]);
+        for(int i = 1; i < n; ++i) {
+            if (q.size() == hw[i].d) {
+                if(q.peek().c < hw[i].c) {
+                    q.poll();
+                    q.add(hw[i]);
+                }
+                continue;
+            }
+            q.add(hw[i]);
+        }
+        int answer = 0;
+        while(!q.isEmpty()) {
+            answer += q.poll().c;
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
