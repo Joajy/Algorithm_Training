@@ -1,0 +1,82 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static StringBuilder sb = new StringBuilder();
+    static int n, m, k;
+    static int[] univ;
+    static class Info {
+        int v, cost;
+        public Info(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+    static List<Info>[] edges;
+    static boolean[] vis;
+
+    //https://www.acmicpc.net/problem/1826
+    //https://www.acmicpc.net/problem/1939
+    //https://www.acmicpc.net/problem/13325
+    //https://www.acmicpc.net/problem/14621
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        univ = new int[n + 1];
+        vis = new boolean[n + 1];
+        edges = new ArrayList[n + 1];
+        for (int i = 1; i <= n; ++i) {
+            edges[i] = new ArrayList<>();
+        }
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; ++i) {
+            char u = st.nextToken().charAt(0);
+            if (u == 'M') {
+                univ[i] = 1;
+            } else {
+                univ[i] = 2;
+            }
+        }
+        for (int i = 0; i < m; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int d = Integer.parseInt(st.nextToken());
+            if(univ[u] == univ[v]) continue;
+            edges[u].add(new Info(v, d));
+            edges[v].add(new Info(u, d));
+        }
+    }
+
+    static void solution() {
+        PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.cost, o2.cost);
+        });
+        pq.add(new Info(1, 0));
+        long answer = 0;
+        int count = 0;
+        while(!pq.isEmpty()) {
+            Info cur = pq.poll();
+            if(vis[cur.v]) continue;
+            vis[cur.v] = true;
+            answer += cur.cost;
+            ++count;
+            for(Info nxt : edges[cur.v]) {
+                if(vis[nxt.v]) continue;
+                pq.add(nxt);
+            }
+        }
+        if(count != n) answer = -1;
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
