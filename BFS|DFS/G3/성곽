@@ -1,0 +1,112 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, largeSize;
+    static int[][] area, dp;
+    static boolean[][] vis;
+    // 서 북 동 남
+    static final int[] dx = {0, -1, 0, 1};
+    static final int[] dy = {-1, 0, 1, 0};
+
+    static class Point {
+        int x, y;
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        m = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+        area = new int[n][m];
+        dp = new int[n][m];
+        for (int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < m; ++j) {
+                area[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        largeSize = 0;
+    }
+
+    static void countRoomWithSize() {
+        int size = 0, count = 0;
+        vis = new boolean[n][m];
+        Deque<Point> q = new ArrayDeque<>();
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (vis[i][j] || area[i][j] == 0) continue;
+                ++count;
+                q.add(new Point(i, j));
+                vis[i][j] = true;
+                int rSize = 0;
+                while (!q.isEmpty()) {
+                    Point cur = q.poll();
+                    ++rSize;
+                    for (int dir = 0; dir < 4; ++dir) {
+                        if ((area[cur.x][cur.y] & (1 << dir)) != 0) continue;
+                        int nx = cur.x + dx[dir];
+                        int ny = cur.y + dy[dir];
+                        if (outRange(nx, ny) || vis[nx][ny]) continue;
+                        vis[nx][ny] = true;
+                        q.add(new Point(nx, ny));
+                    }
+                }
+                size = Math.max(size, rSize);
+            }
+        }
+        System.out.println(count);
+        System.out.println(size);
+    }
+
+    static void makeLargestRoom(int x, int y) {
+        int size = 0;
+        Deque<Point> q = new ArrayDeque<>();
+        vis = new boolean[n][m];
+        q.add(new Point(x, y));
+        vis[x][y] = true;
+        while (!q.isEmpty()) {
+            Point cur = q.poll();
+            ++size;
+            for (int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                if (outRange(nx, ny) || vis[nx][ny]) continue;
+                if ((area[cur.x][cur.y] & (1 << dir)) != 0) continue;
+                vis[nx][ny] = true;
+                q.add(new Point(nx, ny));
+            }
+        }
+        largeSize = Math.max(largeSize, size);
+    }
+
+    static void solution() {
+        countRoomWithSize();
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                for (int dir = 0; dir < 4; ++dir) {
+                    if ((area[i][j] & (1 << dir)) == 0) continue;
+                    area[i][j] -= (1 << dir);
+                    makeLargestRoom(i, j);
+                    area[i][j] += (1 << dir);
+                }
+            }
+        }
+        System.out.println(largeSize);
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x >= n || y < 0 || y >= m;
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
