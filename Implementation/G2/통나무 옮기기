@@ -1,0 +1,108 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static int n;
+    static char[][] area;
+    static class Info {
+        // dir == 0 ? 수평 : 수직
+        int x, y, dir, count;
+        Info(int x, int y, int dir, int count) {
+            this.x = x;
+            this.y = y;
+            this.dir = dir;
+            this.count = count;
+        }
+    }
+    static final int[] dx = {-1, 1, 0, 0};
+    static final int[] dy = {0, 0, -1, 1};
+    static Info b, e;
+    static boolean[][][] vis;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        area = new char[n][n];
+        vis = new boolean[n][n][2];
+        int bx = 0, ex = 0;
+        int bCnt = 0, eCnt = 0;
+        for (int i = 0; i < n; ++i) {
+            String s = br.readLine();
+            for (int j = 0; j < n; ++j) {
+                area[i][j] = s.charAt(j);
+                if (area[i][j] == 'B') {
+                    if (++bCnt == 2) {
+                        if (i == bx) b = new Info(i, j, 0, 0);
+                        else b = new Info(i, j, 1, 0);
+                    }
+                    bx = i;
+                    area[i][j] = '0';
+                } else if (area[i][j] == 'E') {
+                    if (++eCnt == 2) {
+                        if (i == ex) e = new Info(i, j, 0, 0);
+                        else e = new Info(i, j, 1, 0);
+                    }
+                    ex = i;
+                    area[i][j] = '0';
+                }
+            }
+        }
+    }
+
+    static void solution() {
+        Deque<Info> q = new ArrayDeque<>();
+        q.add(new Info(b.x, b.y, b.dir, b.count));
+        while(!q.isEmpty()) {
+            Info cur = q.poll();
+            if(arrived(cur.x, cur.y, cur.dir)) {
+                System.out.println(cur.count);
+                return;
+            }
+            if(vis[cur.x][cur.y][cur.dir]) continue;
+            vis[cur.x][cur.y][cur.dir] = true;
+            for (int i = 0; i < 4; ++i) {
+                int nx = cur.x + dx[i];
+                int ny = cur.y + dy[i];
+                if(outRange(nx, ny) || vis[nx][ny][cur.dir]) continue;
+                if(area[nx][ny] == '1') continue;
+                //3칸 옮겼을 때 조건 if
+                if(cur.dir == 0) {
+                    if(outRange(nx, ny - 1) || outRange(nx, ny + 1)) continue;
+                    if(area[nx][ny - 1] == '1' | area[nx][ny + 1] == '1') continue;
+                } else {
+                    if(outRange(nx - 1, ny) || outRange(nx + 1, ny)) continue;
+                    if(area[nx - 1][ny] == '1' | area[nx + 1][ny] == '1') continue;
+                }
+                q.add(new Info(nx, ny, cur.dir, cur.count + 1));
+            }
+            //회전했을 때 안정되는지 조건 탐색
+            if(vis[cur.x][cur.y][1 - cur.dir]) continue;
+            if(!canRotate(cur)) continue;
+            q.add(new Info(cur.x, cur.y, 1 - cur.dir, cur.count + 1));
+        }
+        System.out.println(0);
+    }
+
+    static boolean canRotate(final Info cur) {
+        for(int x = cur.x - 1; x <= cur.x + 1; ++x) {
+            for(int y = cur.y - 1; y <= cur.y + 1; ++y) {
+                if(outRange(x, y) || area[x][y] == '1') return false;
+            }
+        }
+        return true;
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x >= n || y < 0 || y >= n;
+    }
+
+    static boolean arrived(int x, int y, int dir) {
+        return e.dir == dir && e.x == x && e.y == y;
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
