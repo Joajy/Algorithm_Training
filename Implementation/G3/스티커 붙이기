@@ -1,0 +1,110 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, k;
+    static class Sticker {
+        int[][] area;
+        Sticker(int[][] area) {
+            this.area = area;
+        }
+    }
+    static Sticker[] stickers;
+    static int[][] vis;
+    static final int[] dx = {-1, 0, 0, 1};
+    static final int[] dy = {0, -1, 1, 0};
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        vis = new int[n][m];
+        stickers = new Sticker[k];
+        for (int i = 0; i < k; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            int[][] area = new int[x][y];
+            for (int r = 0; r < x; ++r) {
+                st = new StringTokenizer(br.readLine());
+                for(int c = 0; c < y; ++c) {
+                    area[r][c] = Integer.parseInt(st.nextToken());
+                }
+            }
+            stickers[i] = new Sticker(area);
+        }
+    }
+
+    static boolean sequentialAttach(int index) {
+        int[][] area = stickers[index].area;
+        for (int i = 0; i <= n - area.length; ++i) {
+            for (int j = 0; j <= m - area[0].length; ++j) {
+                if(possible(i, j, area)) {
+                    attach(i, j, area);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static void attach(int x, int y, int[][] area) {
+        for(int i = x; i < x + area.length; ++i) {
+            for(int j = y; j < y + area[0].length; ++j) {
+                vis[i][j] = Math.max(vis[i][j], area[i - x][j - y]);
+            }
+        }
+    }
+
+    static boolean possible(int x, int y, int[][] area) {
+        for(int i = x; i < x + area.length; ++i){
+            for(int j = y; j < y + area[0].length; ++j){
+                if(area[i - x][j - y] == 0) continue;
+                if(area[i - x][j - y] == vis[i][j]) return false;
+            }
+        }
+        return true;
+    }
+
+    static void rotate(int k) {
+        Sticker sticker = stickers[k];
+        int r = sticker.area.length;
+        int c = sticker.area[0].length;
+        int[][] area = new int[c][r];
+        for (int i = 0; i < r; ++i) {
+            int[] tmp = sticker.area[i].clone();
+            for(int j = 0; j < c; ++j) {
+                area[j][r - i - 1] = tmp[j];
+            }
+        }
+        sticker.area = area;
+    }
+
+    static void solution() {
+        for (int i = 0; i < k; ++i) {
+            // 위쪽부터 차례로 채워나갈 때, 회전 없이 바로 부착 가능한 경우
+            if(sequentialAttach(i)) continue;
+            // 방향 돌려가며 sequentialAttach를 진행한다
+            for (int dir = 0; dir < 3; ++dir) {
+                rotate(i);
+                if(sequentialAttach(i)) break;
+            }
+        }
+        int answer = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                answer += vis[i][j];
+            }
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
