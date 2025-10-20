@@ -1,0 +1,42 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+    }
+
+    static void rec(String value) {
+        if(value.length() == n) {
+            System.out.println(value);
+            System.exit(0);
+        }
+        for (int i = 1; i <= 3; ++i) {
+            if(isGoodString(value + i)) rec(value + i);
+        }
+    }
+
+    static boolean isGoodString(String number) {
+        int len = number.length();
+        for (int i = 1; i <= len / 2; ++i) {
+            String forward = number.substring(len - (i * 2), len - i);
+            String backward = number.substring(len - i);
+            if(forward.equals(backward)) return false;
+        }
+        return true;
+    }
+
+    static void solution() {
+        rec("");
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
