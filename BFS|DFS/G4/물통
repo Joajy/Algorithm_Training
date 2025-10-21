@@ -1,0 +1,54 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int[] bottle;
+    static boolean[][][] vis;
+    static List<Integer> answer = new ArrayList<>();
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        bottle = new int[3];
+        for (int i = 0; i < 3; ++i) {
+            bottle[i] = Integer.parseInt(st.nextToken());
+        }
+        vis = new boolean[bottle[0] + 1][bottle[1] + 1][bottle[2] + 1];
+    }
+
+    static void rec(int[] b) {
+        if(vis[b[0]][b[1]][b[2]]) return;
+        if(b[0] == 0) answer.add(b[2]);
+        vis[b[0]][b[1]][b[2]] = true;
+        for (int i = 0; i < 3; ++i) {
+            for(int j = 0; j < 3; ++j) {
+                if(i == j) continue;
+                int[] newB = b.clone();
+                if(bottle[i] <= newB[i] + newB[j]) {
+                    newB[j] += newB[i] - bottle[i];
+                    newB[i] = bottle[i];
+                    rec(newB);
+                } else {
+                    newB[i] += newB[j];
+                    newB[j] = 0;
+                    rec(newB);
+                }
+            }
+        }
+    }
+
+    static void solution() {
+        rec(new int[]{0, 0, bottle[2]});
+        Collections.sort(answer);
+        for (int vol : answer) {
+            System.out.print(vol + " ");
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
