@@ -1,0 +1,117 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, answer;
+    static int[] count;
+    static int[][] area, amount;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {-1, 0, 1, 0};
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        amount = new int[n + 1][n + 1];
+        for(int i = 1; i <= n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            for(int j = 1; j <= n; ++j) {
+                amount[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        answer = Integer.MAX_VALUE;
+    }
+
+    static void divideArea(int x, int y, int d1, int d2) {
+        count = new int[6];
+        //5번 경계선을 먼저 만든 뒤, 구역 설정이 되어있지 않은 칸들에 한해서 1~4순서대로 할당해준다
+        make5Area(x, y, d1, d2);
+        //area 1
+        for (int i = 1; i < x + d1; ++i) {
+            for (int j = 1; j <= y; ++j) {
+                if(area[i][j] != 0) break;
+                area[i][j] = 1;
+                count[1] += amount[i][j];
+            }
+        }
+        //area 2
+        for (int i = 1; i <= x + d2; ++i) {
+            for (int j = n; j > y; --j) {
+                if(area[i][j] != 0) break;
+                area[i][j] = 2;
+                count[2] += amount[i][j];
+            }
+        }
+        //area 3
+        for (int i = n; i >= x + d1; --i) {
+            for (int j = 1; j < y - d1 + d2; ++j) {
+                if(area[i][j] != 0) break;
+                area[i][j] = 3;
+                count[3] += amount[i][j];
+            }
+        }
+        //area 4
+        for (int i = n; i > x + d2; --i) {
+            for (int j = n; j >= y - d1 + d2; --j) {
+                if(area[i][j] != 0) break;
+                area[i][j] = 4;
+                count[4] += amount[i][j];
+            }
+        }
+        //area 5
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if(area[i][j] == 0 || area[i][j] == 5) count[5] += amount[i][j];
+            }
+        }
+        Arrays.sort(count);
+        answer = Math.min(answer, count[5] - count[1]);
+    }
+
+    static void solution() {
+        for (int x = 1; x <= n; ++x) {
+            for(int y = 1; y <= n; ++y) {
+                for(int d1 = 1; 1 <= y - d1; ++d1) {
+                    for (int d2 = 1; x + d1 + d2 <= n && y + d2 <= n; ++d2) {
+                        area = new int[n + 1][n + 1];
+                        divideArea(x, y, d1, d2);
+                    }
+                }
+            }
+        }
+        System.out.println(answer);
+    }
+
+    static void make5Area(int x, int y, int d1, int d2) {
+        //1번 경계선
+        for (int i = 0; i <= d1; ++i) {
+            if (outRange(x + i, y - i)) break;
+            area[x + i][y - i] = 5;
+        }
+        //2번 경계선
+        for (int i = 0; i <= d2; ++i) {
+            if (outRange(x + i, y + i)) break;
+            area[x + i][y + i] = 5;
+        }
+        //3번 경계선
+        for (int i = 0; i <= d2; ++i) {
+            if (outRange(x + d1 + i, y - d1 + i)) break;
+            area[x + d1 + i][y - d1 + i] = 5;
+        }
+        //4번 경계선
+        for (int i = 0; i <= d1; ++i) {
+            if (outRange(x + d2 + i, y + d2 - i)) break;
+            area[x + d2 + i][y + d2 - i] = 5;
+        }
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 1 || x > n || y < 1 || y > n;
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
