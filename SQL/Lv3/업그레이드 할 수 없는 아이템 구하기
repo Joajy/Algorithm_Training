@@ -1,0 +1,12 @@
+SELECT ITEM_ID, ITEM_NAME, RARITY
+  FROM ITEM_INFO
+ WHERE ITEM_ID NOT IN (
+        SELECT PARENT_ITEM_ID
+          FROM ITEM_TREE
+         WHERE PARENT_ITEM_ID IS NOT NULL
+     )
+ ORDER BY ITEM_ID DESC;
+
+# IN 연산은 =의 or 연산 합으로, 서브쿼리 중 하나라도 true가 있다면 or연산에선 true가 우선되므로 정상결과 반환
+# NOT IN 연산은 !=와 and의 연산 합으로, 서브쿼리 중 하나라도 unknown(NULL)이 있다면 and 연산에서 unknown이 우선되어 비정상적 결과 반환
+# 즉 NOT IN 연산 시 null값 존재하면 이상한 값 나올 수 있으므로, IS NOT NULL을 통해 사전 점검 필요
