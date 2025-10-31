@@ -1,0 +1,61 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, answer;
+    static List<Info>[] edges;
+    static class Info {
+        int v, cost;
+        Info(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+    static boolean[] vis;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        edges = new ArrayList[n + 1];
+        vis = new boolean[n + 1];
+        for(int i = 1; i <= n; ++i) {
+            edges[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < m; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
+            edges[a].add(new Info(b, cost));
+            edges[b].add(new Info(a, cost));
+        }
+        answer = 0;
+    }
+
+    static void solution() {
+        PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> o1.cost - o2.cost);
+        pq.add(new Info(1, 0));
+        int maxValue = 0;
+        while(!pq.isEmpty()) {
+            Info cur = pq.poll();
+            if(vis[cur.v]) continue;
+            vis[cur.v] = true;
+            answer += cur.cost;
+            maxValue = Math.max(maxValue, cur.cost);
+            for(Info nxt : edges[cur.v]) {
+                if(vis[nxt.v]) continue;
+                pq.add(nxt);
+            }
+        }
+        System.out.println(answer - maxValue);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
