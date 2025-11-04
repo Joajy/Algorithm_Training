@@ -1,0 +1,64 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static StringTokenizer st;
+    static int n, m;
+    static List<Integer>[] large, small;
+    static boolean[] vis;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        large = new ArrayList[n + 1];
+        small = new ArrayList[n + 1];
+        for (int i = 1; i <= n; ++i) {
+            large[i] = new ArrayList<>();
+            small[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < m; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            large[u].add(v);
+            small[v].add(u);
+        }
+    }
+
+    static int dfs(int cur, int toLarge) {
+        vis[cur] = true;
+        int count = 1;
+        //자기보다 작은 아이들 방향으로
+        if(toLarge == 0) {
+            for (int nxt : small[cur]) {
+                if(!vis[nxt]) count += dfs(nxt, toLarge);
+            }
+        } else {
+            for(int nxt : large[cur]) {
+                if(!vis[nxt]) count += dfs(nxt, toLarge);
+            }
+        }
+        return count;
+    }
+
+    static void solution() {
+        int answer = 0;
+        for (int i = 1; i <= n; ++i) {
+            vis = new boolean[n + 1];
+            int largeCnt = dfs(i, 1) - 1;
+            vis = new boolean[n + 1];
+            int smallCnt = dfs(i, 0) - 1;
+            if(largeCnt + smallCnt == n - 1) ++answer;
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
