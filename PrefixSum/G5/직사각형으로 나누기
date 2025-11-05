@@ -1,0 +1,118 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m;
+    static long answer;
+    static int[][] area, prefix;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        area = new int[n + 1][m + 1];
+        prefix = new int[n + 1][m + 1];
+        for(int i = 1; i <= n; ++i) {
+            String s = br.readLine();
+            for(int j = 1; j <= m; ++j) {
+                area[i][j] = s.charAt(j - 1) - '0';
+            }
+        }
+        for(int i = 1; i <= n; ++i) {
+            for(int j = 1; j <= m; ++j) {
+                prefix[i][j] = prefix[i - 1][j] + prefix[i][j - 1] - prefix[i - 1][j - 1] + area[i][j];
+            }
+        }
+        answer = 0;
+    }
+
+    // 셋 다 세로
+    static void case1() {
+        for (int i = 1; i <= m - 2; ++i) {
+            for (int j = i + 1; j <= m - 1; ++j) {
+                long first = prefix[n][i];
+                long second = prefix[n][j] - prefix[n][i];
+                long third = prefix[n][m] - prefix[n][j];
+                answer = Math.max(answer, first * second * third);
+            }
+        }
+    }
+
+    // 셋 다 가로
+    static void case2() {
+        for (int i = 1; i <= n - 2; ++i) {
+            for (int j = i + 1; j <= n - 1; ++j) {
+                long first = prefix[i][m];
+                long second = prefix[j][m] - prefix[i][m];
+                long third = prefix[n][m] - prefix[j][m];
+                answer = Math.max(answer, first * second * third);
+            }
+        }
+    }
+
+    // 세로 둘 아래 가로 하나
+    static void case3() {
+        for (int i = 1; i <= n - 1; ++i) {
+            for (int j = 1; j <= m - 1; ++j) {
+                long first = prefix[i][j];
+                long second = prefix[i][m] - prefix[i][j];
+                long third = prefix[n][m] - prefix[i][m];
+                answer = Math.max(answer, first * second * third);
+            }
+        }
+    }
+
+    // 세로 둘 위 가로 하나
+    static void case4() {
+        for (int i = 1; i <= n - 1; ++i) {
+            for (int j = 1; j <= m - 1; ++j) {
+                long first = prefix[i][m];
+                long second = prefix[n][j] - prefix[i][j];
+                long third = prefix[n][m] - prefix[n][j] - prefix[i][m] + prefix[i][j];
+                answer = Math.max(answer, first * second * third);
+            }
+        }
+    }
+
+    // 가로 둘 오른쪽 세로 하나
+    static void case5() {
+        for (int i = 1; i <= n - 1; ++i) {
+            for (int j = 1; j <= m - 1; ++j) {
+                long first = prefix[i][j];
+                long second = prefix[n][j] - prefix[i][j];
+                long third = prefix[n][m] - prefix[n][j];
+                answer = Math.max(answer, first * second * third);
+            }
+        }
+    }
+
+    // 가로 둘 왼쪽 세로 하나
+    static void case6() {
+        for (int i = 1; i <= n - 1; ++i) {
+            for (int j = 1; j <= m - 1; ++j) {
+                long first = prefix[n][j];
+                long second = prefix[i][m] - prefix[i][j];
+                long third = prefix[n][m] - prefix[n][j] - prefix[i][m] + prefix[i][j];
+                answer = Math.max(answer, first * second * third);
+            }
+        }
+    }
+
+    static void solution() {
+        case1();
+        case2();
+        case3();
+        case4();
+        case5();
+        case6();
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
