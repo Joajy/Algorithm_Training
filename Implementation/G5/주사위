@@ -1,0 +1,45 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static long n;
+    static long[] dice;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        dice = new long[6];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < 6; ++i) {
+            dice[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    static void solution() {
+        long answer = 0;
+        if(n == 1) {
+            Arrays.sort(dice);
+            for (int i = 0; i < 5; ++i) {
+                answer += dice[i];
+            }
+            System.out.println(answer);
+            return;
+        }
+        long[] minValue = new long[3];
+        for(int i = 0; i < 3; ++i) {
+            minValue[i] = Math.min(dice[i], dice[5 - i]);
+        }
+        Arrays.sort(minValue);
+        answer += 4 * (minValue[0] + minValue[1] + minValue[2]);
+        answer += (8 * (n - 2) + 4) * (minValue[0] + minValue[1]);
+        answer += (5 * (n - 2) * (n - 2) + 4 * (n - 2)) * minValue[0];
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
