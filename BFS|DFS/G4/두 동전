@@ -1,0 +1,76 @@
+import java.awt.Point;
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m;
+    static char[][] board;
+    static class Info {
+        Point a, b;
+        int count;
+        Info(Point a, Point b, int count) {
+            this.a = a;
+            this.b = b;
+            this.count = count;
+        }
+    }
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {1, 0, -1, 0};
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x >= n || y < 0 || y >= m;
+    }
+
+    static boolean isEndGame(Info info) {
+        boolean p1 = outRange(info.a.x, info.a.y);
+        boolean p2 = outRange(info.b.x, info.b.y);
+        return (p1 && !p2) || (!p1 && p2);
+    }
+
+    public static void main(String[] args) throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        board = new char[n][m];
+        Point a = null, b = null;
+        Deque<Info> q = new ArrayDeque<>();
+        for (int i = 0; i < n; ++i) {
+            String s = br.readLine();
+            for (int j = 0; j < m; ++j) {
+                board[i][j] = s.charAt(j);
+                if(board[i][j] == 'o') {
+                    if(a == null) a = new Point(i, j);
+                    else b = new Point(i, j);
+                }
+            }
+        }
+        q.add(new Info(a, b, 0));
+        while(!q.isEmpty()) {
+            Info cur = q.poll();
+            if(cur.count > 10) continue;
+            if(isEndGame(cur)) {
+                System.out.println(cur.count);
+                return;
+            }
+            for(int dir = 0; dir < 4; ++dir) {
+                int ax = cur.a.x + dx[dir];
+                int ay = cur.a.y + dy[dir];
+                int bx = cur.b.x + dx[dir];
+                int by = cur.b.y + dy[dir];
+                if(outRange(cur.a.x, cur.a.y) || (!outRange(ax, ay) && board[ax][ay] == '#')) {
+                    ax = cur.a.x;
+                    ay = cur.a.y;
+                }
+                if (outRange(cur.b.x, cur.b.y) || (!outRange(bx, by) && board[bx][by] == '#')) {
+                    bx = cur.b.x;
+                    by = cur.b.y;
+                }
+                q.add(new Info(new Point(ax, ay), new Point(bx, by), cur.count + 1));
+            }
+        }
+        System.out.println(-1);
+    }
+}
