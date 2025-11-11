@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static StringTokenizer st;
+    static int n;
+    static int[][] map, dp;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {1, 0, -1, 0};
+    static class Info {
+        int x, y;
+        Info(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static void input() throws IOException {
+        map = new int[n][n];
+        dp = new int[n][n];
+        for(int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            for(int j = 0; j < n; ++j) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+                dp[i][j] = (int)1e9;
+            }
+        }
+        dp[0][0] = map[0][0];
+    }
+
+    static void solution(int count) {
+        Deque<Info> q = new ArrayDeque<>();
+        q.add(new Info(0, 0));
+        while(!q.isEmpty()) {
+            Info cur = q.poll();
+            for(int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                if(outRange(nx, ny)) continue;
+                if(dp[cur.x][cur.y] + map[nx][ny] >= dp[nx][ny]) continue;
+                dp[nx][ny] = dp[cur.x][cur.y] + map[nx][ny];
+                q.add(new Info(nx, ny));
+            }
+        }
+        sb.append("Problem ").append(count).append(": ").append(dp[n - 1][n - 1]).append('\n');
+    }
+
+    static boolean outRange(int x, int y) {
+        return x < 0 || x >= n || y < 0 || y >= n;
+    }
+
+    public static void main(String[] args) throws IOException {
+        int count = 1;
+        while(true) {
+            n = Integer.parseInt(br.readLine());
+            if(n == 0) break;
+            input();
+            solution(count++);
+        }
+        System.out.println(sb);
+    }
+}
