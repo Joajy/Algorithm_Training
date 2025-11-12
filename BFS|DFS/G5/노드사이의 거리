@@ -1,0 +1,74 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static StringTokenizer st;
+    static int n, m;
+    static int[][] dist;
+    static List<Info>[] edges;
+    static class Info {
+        int v, cost;
+        public Info(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        dist = new int[n + 1][n + 1];
+        edges = new ArrayList[n + 1];
+        for (int i = 1; i <= n; ++i) {
+            edges[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < n - 1; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            edges[a].add(new Info(b, c));
+            edges[b].add(new Info(a, c));
+        }
+        for(int i = 1; i <= n; ++i) {
+            boolean[] vis = new boolean[n + 1];
+            Deque<Info> q = new ArrayDeque<>();
+            q.add(new Info(i, 0));
+            while(!q.isEmpty()) {
+                Info cur = q.poll();
+                vis[cur.v] = true;
+                for(Info nxt : edges[cur.v]) {
+                    if(vis[nxt.v]) continue;
+                    q.add(new Info(nxt.v, dist[cur.v][nxt.v]));
+                    if(dist[cur.v][nxt.v] != 0) continue;
+                    dist[cur.v][nxt.v] = cur.cost + nxt.cost;
+                }
+            }
+        }
+        for (int i = 0; i < m; ++i) {
+            boolean[] vis = new boolean[n + 1];
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            Deque<Info> q = new ArrayDeque<>();
+            q.add(new Info(a, 0));
+            vis[a] = true;
+            while(!q.isEmpty()) {
+                Info cur = q.poll();
+                vis[cur.v] = true;
+                if(cur.v == b) {
+                    System.out.println(cur.cost);
+                    break;
+                }
+                for(Info nxt : edges[cur.v]) {
+                    if(vis[nxt.v]) continue;
+                    q.add(new Info(nxt.v, cur.cost + dist[cur.v][nxt.v]));
+                }
+            }
+        }
+    }
+}
