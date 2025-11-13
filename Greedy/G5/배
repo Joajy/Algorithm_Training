@@ -1,0 +1,67 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, moveCnt;
+    static int[] crane, box;
+    static boolean[] moved;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        crane = new int[n];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; ++i) {
+            crane[i] = Integer.parseInt(st.nextToken());
+        }
+        m = Integer.parseInt(br.readLine());
+        box = new int[m];
+        moved = new boolean[m];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < m; ++i) {
+            box[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    static void moveBoxWithCrane() {
+        for (int i = n - 1; i >= 0; --i) {
+            for(int j = m - 1; j >= 0; --j) {
+                if(moved[j] || box[j] > crane[i]) continue;
+                moved[j] = true;
+                ++moveCnt;
+                break;
+            }
+        }
+    }
+
+    static boolean isAllMoved() {
+        for(int i = 0; i < m; ++i) {
+            if(!moved[i]) return false;
+        }
+        return true;
+    }
+
+    static void solution() {
+        Arrays.sort(crane);
+        Arrays.sort(box);
+        int count = 1;
+        while(true) {
+            moveCnt = 0;
+            moveBoxWithCrane();
+            if(isAllMoved()) {
+                System.out.println(count);
+                return;
+            }
+            if(moveCnt == 0) break;
+            ++count;
+        }
+        System.out.println(-1);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
