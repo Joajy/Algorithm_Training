@@ -1,0 +1,56 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static List<Info> lectures;
+    static class Info {
+        int s, e;
+        Info(int s, int e) {
+            this.s = s;
+            this.e = e;
+        }
+    }
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        lectures = new ArrayList<>();
+        for (int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            st.nextToken(); //강의 번호는 필요 없으니 생략
+            int start = Integer.parseInt(st.nextToken());
+            int end = Integer.parseInt(st.nextToken());
+            lectures.add(new Info(start, end));
+        }
+    }
+
+    static void solution() {
+        Collections.sort(lectures, (o1, o2) -> {
+            if (o1.s == o2.s) return Integer.compare(o1.e, o2.e);
+            return Integer.compare(o1.s, o2.s);
+        });
+        PriorityQueue<Info> pq = new PriorityQueue<>((o1, o2) -> {
+            if (o1.e == o2.e) return Integer.compare(o1.s, o2.s);
+            return Integer.compare(o1.e, o2.e);
+        });
+        pq.add(lectures.get(0));
+        for (int i = 1; i < n; ++i) {
+            Info lec = lectures.get(i);
+            Info cur = pq.peek();
+            //pq에 있는 종료값보다 현재 시작값이 크면, 바로 이어갈 수 있다
+            if (cur.e <= lec.s) {
+                pq.poll();
+            }
+            pq.add(lec);
+        }
+        System.out.println(pq.size());
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
