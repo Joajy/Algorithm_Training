@@ -1,0 +1,85 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static StringTokenizer st;
+    static int n, answer;
+    static int[] min;
+    static int[][] menu;
+    static boolean[] vis;
+    static List<Integer> list, result;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        list = new ArrayList<>();
+        result = new ArrayList<>();
+        menu = new int[n][5];
+        vis = new boolean[n];
+        min = new int[4];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < 4; ++i) {
+            min[i] = Integer.parseInt(st.nextToken());
+        }
+        for (int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < 5; ++j) {
+                menu[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        answer = Integer.MAX_VALUE;
+    }
+
+    static boolean cert(int[] mValue) {
+        for (int i = 0; i < 4; ++i) {
+            if(mValue[i] < min[i]) return false;
+        }
+        return true;
+    }
+
+    static void rec(int index, int cost, int[] mValue) {
+        if (cert(mValue)) {
+            if(answer > cost) {
+                answer = cost;
+                result.clear();
+                result.addAll(list);
+            }
+            return;
+        }
+        for (int i = index; i < n; ++i) {
+            if(vis[i]) continue;
+            vis[i] = true;
+            list.add(i);
+            setting(i, 1, mValue);
+            rec(i, cost + menu[i][4], mValue);
+            list.remove(list.size() - 1);
+            setting(i, -1, mValue);
+            vis[i] = false;
+        }
+    }
+
+    static void setting(int index, int op, int[] mValue) {
+        for(int i = 0; i < 4; ++i) {
+            mValue[i] += op * menu[index][i];
+        }
+    }
+
+    static void solution() {
+        rec(0, 0, new int[4]);
+        if(answer == Integer.MAX_VALUE) {
+            System.out.println(-1);
+            return;
+        }
+        System.out.println(answer);
+        for (int i : result) {
+            System.out.print((i + 1) + " ");
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
