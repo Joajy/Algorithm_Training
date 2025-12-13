@@ -1,0 +1,54 @@
+import java.util.*;
+
+class Solution {
+
+    static int n;
+    static int[] timeline, answer;
+
+    static void mention(boolean isAll, int timestamp) {
+        for(int i = 0; i < n; ++i) {
+            if(isAll) ++answer[i];
+            else if(timeline[i] <= timestamp) ++answer[i];
+            System.out.println(i+" "+timeline[i]);
+        }
+            System.out.println("test "+isAll);
+    }
+
+    public int[] countMentions(int numberOfUsers, List<List<String>> events) {
+        events.sort((a, b) -> {
+            int timeA = Integer.parseInt(a.get(1));
+            int timeB = Integer.parseInt(b.get(1));
+            if(timeA == timeB) {
+                return b.get(0).compareTo(a.get(0));
+            }
+            return Integer.compare(timeA, timeB);
+        });
+        n = numberOfUsers;
+        answer = new int[n];
+        timeline = new int[n];
+        for(List<String> event : events) {
+            String command = event.get(0);
+            int timestamp = Integer.parseInt(event.get(1));
+            if(command.equals("MESSAGE")) {
+                // message
+                if(event.get(2).equals("ALL")) {
+                    mention(true, timestamp);
+                    continue;
+                } else if(event.get(2).equals("HERE")) {
+                    mention(false, timestamp);
+                    continue;
+                }
+                StringTokenizer st = new StringTokenizer(event.get(2));
+                while(st.hasMoreTokens()) {
+                    int id = Integer.parseInt(st.nextToken().substring(2));
+                    ++answer[id];
+                }
+            } else {
+                // offline
+                int id = Integer.parseInt(event.get(2));
+                timeline[id] = timestamp + 60;
+            }
+        }
+        return answer;
+    }
+}
