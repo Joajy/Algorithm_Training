@@ -1,0 +1,53 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static int[] dist;
+    static List<Integer>[] path;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        st = new StringTokenizer(br.readLine());
+        path = new ArrayList[n + 1];
+        dist = new int[n + 1];
+        for(int i = 1; i <= n; ++i) {
+            path[i] = new ArrayList<>();
+        }
+        for (int i = 1; i <= n; ++i) {
+            int target = Integer.parseInt(st.nextToken());
+            path[target].add(i);
+            dist[i] = (int)1e9;
+        }
+        dist[n] = 0;
+    }
+
+    static void solution() {
+        Deque<Integer> q = new ArrayDeque<>();
+        q.add(n);
+        boolean[] vis = new boolean[n + 1];
+        while(!q.isEmpty()) {
+            int cur = q.poll();
+            if(vis[cur]) continue;
+            vis[cur] = true;
+            for(int nxt : path[cur]) {
+                if(vis[nxt]) continue;
+                if(dist[nxt] <= dist[cur] + 1) continue;
+                dist[nxt] = dist[cur] + 1;
+                q.add(nxt);
+            }
+        }
+        for(int i = 1; i <= n; ++i) {
+            if(dist[i] == (int)1e9) System.out.println(-1);
+            else System.out.println(dist[i]);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
