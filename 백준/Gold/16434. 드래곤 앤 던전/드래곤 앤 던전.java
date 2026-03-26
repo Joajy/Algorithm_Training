@@ -31,7 +31,7 @@ public class Main {
                 long mATK = room[i][1];
                 long mHP = room[i][2];
                 // 1. 몬스터를 죽이기 위해 영웅이 공격해야 하는 횟수 (올림 처리)
-                long hitCount = (mHP + attack - 1) / attack;
+                long hitCount = mHP / attack + (mHP % attack == 0 ? 0 : 1);
                 // 2. 몬스터가 영웅을 공격하는 횟수는 (hitCount - 1)
                 hp -= mATK * (hitCount - 1);
                 // 생명력이 0 이하가 되면 클리어 실패
