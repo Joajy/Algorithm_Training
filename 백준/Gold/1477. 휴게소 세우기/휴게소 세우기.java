@@ -40,7 +40,6 @@ public class Main {
         int answer = 0;
         while(s <= e) {
             int mid = (s + e) >> 1;
-            if(mid == 0) break;
             int count = getRestCount(mid);
             if(count <= m) {
                 answer = mid;
