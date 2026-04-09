@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    
+    static List<Integer> groups;
+    static int score;
+    static int[] cards;
+
+    // 카드 순회를하며 지나간 자리는 0값으로 만든다(초기 설정값 1 ~ n이므로)
+    static void rec(int cur) {
+        if(cards[cur] == 0) return;
+        int nxt = cards[cur];
+        ++score;
+        cards[cur] = 0;
+        rec(nxt);
+    }
+    
+    public int solution(int[] Cards) {
+        int answer = 0, n = Cards.length;
+        groups = new ArrayList<>();
+        cards = new int[n + 1];
+        for(int i = 0; i < n; ++i) {
+            cards[i + 1] = Cards[i];
+        }
+        // 1부터 n까지 아직 참조하지 않은 구간에 대해 순환탐색
+        for(int i = 1; i <= n; ++i) {
+            if(cards[i] == 0) continue;
+            score = 0;
+            rec(i);
+            groups.add(score);
+        }
+        // 그룹 사이즈가 1이라는 뜻(1번 상자 그룹만 있다) -> 곱연산을 진행할 2번 상자 그룹이 없으므로 0값이 된다
+        if(groups.size() == 1) return 0;
+        for(int i = 0; i < groups.size(); ++i) {
+            for(int j = i + 1; j < groups.size(); ++j) {
+                int one = groups.get(i);
+                int two = groups.get(j);
+                answer =  Math.max(answer, one * two);
+            }
+        }
+        return answer;
+    }
+}
