@@ -1,0 +1,36 @@
+import java.util.*;
+
+class Solution {
+    
+    static List<Double> array;
+    
+    public double[] solution(int k, int[][] ranges) {
+        double[] answer = new double[ranges.length];
+        array = new ArrayList<>();
+        double numbers = (double)k;
+        array.addLast(numbers);
+        while(numbers != 1) {
+            if(numbers % 2 == 0) numbers = numbers / 2;
+            else numbers = numbers * 3 + 1;
+            array.addLast(numbers);
+        }
+        for(int i = 0; i < ranges.length; ++i) {
+            int start = ranges[i][0];
+            int end   = ranges[i][1];
+            if(end < 0) end = array.size() + end - 1;
+            else if(end == 0) end = array.size() - 1;
+            if(start > end) {
+                answer[i] = -1.0;
+                continue;
+            }
+            double sum = 0;
+            for(int r = start; r < end; ++r) {
+                double high = Math.max(array.get(r), array.get(r + 1));
+                double low  = Math.min(array.get(r), array.get(r + 1));
+                sum += low + (high - low) / 2;
+            }
+            answer[i] = sum;
+        }
+        return answer;
+    }
+}
