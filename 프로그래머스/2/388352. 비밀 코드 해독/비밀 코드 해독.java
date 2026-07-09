@@ -1,0 +1,51 @@
+import java.util.*;
+
+class Solution {
+    static boolean[] isChecked;
+    static List<Long> answer;
+    static int n;
+    static int[] ans;
+    static int[][] query;
+    
+    static void insert(int index, int count, long value) {
+        //5개 넣었을 경우 추가하고 종료
+        if(count == 5) {
+            answer.add(value);
+            return;
+        }
+        //index가 n을 넘을 경우 종료
+        if(index == n + 1) return;
+        //포함시키지 않는 경우
+        insert(index + 1, count, value);
+        //포함시키는 경우
+        insert(index + 1, count + 1, value + (1 << index));
+    }
+    
+    static int calculate(int index) {
+        long value = answer.get(index);
+        for(int i = 0; i < query.length; ++i) {
+            int count = 0;
+            for(int j = 0; j < 5; ++j) {
+                long cmp = 1 << query[i][j];
+                if((cmp & value) != 0) ++count;
+            }
+            if(count != ans[i]) return 0;
+        }
+        return 1;
+    }
+    
+    public int solution(int n, int[][] q, int[] a) {
+        this.n = n;
+        ans = a;
+        query = q;
+        isChecked = new boolean[n + 1];
+        answer = new ArrayList<>();
+        int cnt = 0;
+        insert(1, 0, 0);
+        //가능한 경우의 수는 bit로 구분한다(최대 30자리)
+        for(int i = 0; i < answer.size(); ++i) {
+            cnt += calculate(i);
+        }
+        return cnt;
+    }
+}
