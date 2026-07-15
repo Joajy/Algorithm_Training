@@ -17,3 +17,39 @@ class Solution {
         return answer;
     }
 }
+
+
+/*
+class Solution {
+    
+    static int answer = 100;
+    static int maxValue;
+    
+    static void rec(int value, int count, int c) {
+        if(value == 0 || value >= maxValue) {
+            answer = Math.min(answer, count);
+            return;
+        }
+        int div = (int) Math.pow(10, c);
+        int tmp = value % div;
+        int adder = ret(tmp);
+        // 일의 자리 내림
+        rec(value - tmp, count + adder, c + 1);
+        // 일의 자리 올림
+        rec(value + div - tmp, count + 10 - adder, c + 1);
+    }
+    
+    static int ret(int value) {
+        while(value >= 10) {
+            value /= 10;
+        }
+        return value;
+    }
+    
+    public int solution(int storey) {
+        maxValue = storey * 10;
+        rec(storey, 0, 1);
+        return answer;
+    }
+}
+*/
