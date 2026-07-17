@@ -1,0 +1,45 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n;
+    static boolean isEnd;
+
+    static boolean isGoodArray(String string, int number) {
+        for (int i = string.length() - 1; i >= 0; --i) {
+            //가장 뒤에서부터 확인하며 붙이려는 값(현재 숫자)와 동일한 값을 찾는다
+            if(string.charAt(i) - '0' == number) {
+                int len = string.length() - i;
+                if(i + 1 < len) continue;
+                String right = string.substring(i + 1) + number;
+                String left  = string.substring(i + 1 - len, i + 1);
+                if(right.equals(left)) return false;
+            }
+        }
+        return true;
+    }
+
+    static void rec(String s) {
+        if(isEnd) return;
+        if (s.length() == n) {
+            isEnd = true;
+            System.out.println(s);
+            return;
+        }
+        for (int i = 1; i <= 3; ++i) {
+            if(s.charAt(s.length() - 1) - '0' == i) continue;
+            if(!isGoodArray(s, i)) continue;
+            rec(s + i);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        n = Integer.parseInt(br.readLine());
+        for (int i = 1; i <= 3; ++i) {
+            rec("" + i);
+        }
+    }
+}
