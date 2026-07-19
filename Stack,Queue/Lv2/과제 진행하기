@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Solution {
+    
+    static int getTime(String time) {
+        int ret = 0;
+        ret += Integer.parseInt(time.substring(0, 2)) * 60;
+        ret += Integer.parseInt(time.substring(3));
+        return ret;
+    }
+    
+    static class Work {
+        String name;
+        int remain;
+        Work(String n, int r) {
+            name = n;
+            remain = r;
+        }
+    }
+    
+    public String[] solution(String[][] plans) {
+        int n = plans.length;
+        List<String> ans = new ArrayList<>();
+        String[] answer = {};
+        Arrays.sort(plans, (o1, o2) -> {
+            if(o1[1].compareTo(o2[1]) == 0) {
+                return o1[2].compareTo(o2[2]);
+            }
+            return o1[1].compareTo(o2[1]);
+        });
+        Deque<Work> q = new ArrayDeque<>();
+        q.add(new Work(plans[0][0], Integer.parseInt(plans[0][2])));
+        for(int i = 1; i < n; ++i) {
+            // 다음 시작시간과 직전 시작시간 사이의 간격
+            int term = getTime(plans[i][1]) - getTime(plans[i - 1][1]);
+            while(!q.isEmpty()) {
+                Work cur = q.pollLast();
+                int last = cur.remain;
+                if(last <= term) {
+                    term -= last;
+                    ans.add(cur.name);
+                } else {
+                    cur.remain -= term;
+                    q.addLast(cur);
+                    break;
+                }
+                if(term <= 0) break;
+            }
+            q.add(new Work(plans[i][0], Integer.parseInt(plans[i][2])));
+        }
+        while(!q.isEmpty()) {
+            ans.add(q.pollLast().name);
+        }
+        return ans.toArray(answer);
+    }
+}
