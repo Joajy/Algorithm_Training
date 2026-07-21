@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] dist;
+    static List<Integer>[] edges;
+    
+    static void dijkstra(int destination) {
+        Deque<Integer> q = new ArrayDeque<>();
+        dist[destination] = 0;
+        q.add(destination);
+        while(!q.isEmpty()) {
+            int cur = q.poll();
+            for(int nxt : edges[cur]) {
+                if(dist[cur] + 1 >= dist[nxt]) continue;
+                dist[nxt] = dist[cur] + 1;
+                q.add(nxt);
+            }
+        }
+    }
+    
+    public int[] solution(int n, int[][] roads, int[] sources, int destination) {
+        dist = new int[n + 1];
+        edges = new ArrayList[n + 1];
+        for(int i = 1; i <= n; ++i) {
+            dist[i] = (int)1e9;
+            edges[i] = new ArrayList<>();
+        }
+        for(int[] r : roads) {
+            edges[r[0]].add(r[1]);
+            edges[r[1]].add(r[0]);
+        }
+        dijkstra(destination);
+        int[] answer = new int[sources.length];
+        for(int i = 0; i < sources.length; ++i ) {
+            answer[i] = dist[sources[i]];
+            if(answer[i] == (int)1e9) answer[i] = -1;
+        }
+        return answer;
+    }
+}
