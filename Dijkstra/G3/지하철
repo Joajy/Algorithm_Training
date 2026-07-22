@@ -1,0 +1,81 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m;
+    static int[] dist;
+    static int[][] area;
+    static List<Info>[] edges;
+    static class Info {
+        int v, cost;
+        Info(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        dist = new int[n + 1];
+        area = new int[n + 1][n + 1];
+        edges = new ArrayList[n + 1];
+        for(int i = 1; i <= n; ++i){
+            edges[i] = new ArrayList<>();
+            dist[i] = (int)1e9;
+            st = new StringTokenizer(br.readLine());
+            for (int j = 1; j <= n; ++j) {
+                area[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        // 연결된 지점과 그 지점으로 갈 때의 cost를 연동한다
+        for (int i = 1; i <= n; ++i) {
+            for(int j = 1; j <= n; ++j){
+                if(i == j) continue;
+                edges[i].add(new Info(j, area[i][j]));
+            }
+        }
+        dist[1] = 0;
+    }
+
+    static void solution() {
+        PriorityQueue<Info> q = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.cost, o2.cost);
+        });
+        q.add(new Info(1, 0));
+        while (!q.isEmpty()) {
+            Info cur = q.poll();
+            for (Info nxt : edges[cur.v]) {
+                if(dist[cur.v] + nxt.cost >= dist[nxt.v]) continue;
+                dist[nxt.v] = dist[cur.v] + nxt.cost;
+                q.add(new Info(nxt.v, dist[nxt.v]));
+            }
+        }
+        List<Integer> answer = new ArrayList<>();
+        int end = m;
+        while(end != 1) {
+            answer.add(end);
+            for(int j = 1; j <= n; ++j) {
+                if(end == j) continue;
+                if(dist[end] != dist[j] + area[j][end]) continue;
+                end = j;
+                break;
+            }
+        }
+        answer.add(1);
+        Collections.reverse(answer);
+        System.out.println(dist[m]);
+        for (int i : answer) {
+            System.out.print(i + " " );
+        }
+    }
+    
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
