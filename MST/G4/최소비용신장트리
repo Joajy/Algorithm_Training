@@ -1,0 +1,68 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, answer;
+    static boolean[] vis;
+    static int[][] area;
+    static List<Edge>[] edges;
+    static PriorityQueue<Edge> pq;
+    static class Edge {
+        int v, cost;
+        Edge(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        area = new int[n][n];
+        vis = new boolean[n];
+        edges = new ArrayList[n];
+        for (int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            edges[i] = new ArrayList<>();
+            for (int j = 0; j < n; ++j) {
+                area[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        answer = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                edges[i].add(new Edge(j, area[i][j]));
+                edges[j].add(new Edge(i, area[j][i]));
+            }
+        }
+    }
+
+    static void solution() {
+        pq = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.cost, o2.cost);
+        });
+        pq.add(new Edge(0, 0));
+        while (!pq.isEmpty()) {
+            Edge cur = pq.poll();
+            if(vis[cur.v]) continue;
+            vis[cur.v] = true;
+            answer += cur.cost;
+            for (Edge nxt : edges[cur.v]) {
+                if(vis[nxt.v]) continue;
+                pq.add(nxt);
+            }
+        }
+    }
+
+    static void output() {
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+        output();
+    }
+}
