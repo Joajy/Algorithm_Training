@@ -1,0 +1,55 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, answer;
+    static int[] days;
+    static int[][] birds;
+    static Map<Integer, Integer> birdsType; // number, amount
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        days = new int[m + 1];
+        birds = new int[n][3];  // a, b, day
+        birdsType = new HashMap<>();
+        for (int i = 0; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            birds[i][0] = Integer.parseInt(st.nextToken());
+            birds[i][2] = Integer.parseInt(st.nextToken());
+            birds[i][1] = Integer.parseInt(st.nextToken());
+            birdsType.put(birds[i][0], birdsType.getOrDefault(birds[i][0], 0) + 1);
+        }
+    }
+
+    static void solution() {
+        Arrays.sort(birds, (o1, o2) -> {
+            return Integer.compare(o1[2], o2[2]);
+        });
+        int index = 0;
+        for (int i = 1; i <= m; ++i) {
+            while(index < n && birds[index][2] == i) {
+                // 기존에 있던 새 지우기(--count)
+                int cnt = birdsType.getOrDefault(birds[index][0], 0) - 1;
+                if (cnt == 0) {
+                    birdsType.remove(birds[index][0]);
+                } else {
+                    birdsType.put(birds[index][0], cnt);
+                }
+                //새 추가하기(종류 이미 있을 경우에는 ++count)
+                birdsType.put(birds[index][1], birdsType.getOrDefault(birds[index][1], 0) + 1);
+                ++index;
+            }
+            System.out.println(birdsType.size());
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
