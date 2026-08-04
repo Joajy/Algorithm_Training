@@ -1,0 +1,52 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, first;
+    static int[] numbers, balls;
+    static boolean[] check;
+    static List<Integer> answer;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        numbers = new int[n + 1];
+        check = new boolean[n + 1];
+        for(int i = 1; i <= n; ++i){
+            numbers[i] = Integer.parseInt(br.readLine());
+        }
+        answer = new ArrayList<>();
+    }
+
+    static void rec(int index) {
+        int number = numbers[index];
+        if(number == first) {
+            answer.add(first);
+        }
+        if(check[number]) return;
+        check[number] = true;
+        rec(number);
+        check[number] = false;
+    }
+
+    static void solution() {
+        for(int i = 1; i <= n; ++i) {
+            check[i] = true;
+            first = i;
+            rec(i);
+            check[i] = false;
+        }
+        Collections.sort(answer);
+        System.out.println(answer.size());
+        for (int i : answer) {
+            System.out.println(i);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
