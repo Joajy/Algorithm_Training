@@ -1,0 +1,50 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, answer;
+    static int[] open, willUse;
+
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        st = new StringTokenizer(br.readLine());
+        open = new int[2];
+        open[0] = Integer.parseInt(st.nextToken());
+        open[1] = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(br.readLine());
+        willUse = new int[m];
+        for(int i = 0; i < m; ++i){
+            willUse[i] = Integer.parseInt(br.readLine());
+        }
+        answer = Integer.MAX_VALUE;
+    }
+
+    static void moveDoor(int index, int cur, int sum) {
+        if(index == m) {
+            answer = Math.min(answer, sum);
+            return;
+        }
+        int temp = open[0];
+        open[0] = willUse[index];
+        moveDoor(index + 1, willUse[index], sum + Math.abs(temp - open[0]));
+        open[0] = temp;
+        temp = open[1];
+        open[1] = willUse[index];
+        moveDoor(index + 1, willUse[index], sum + Math.abs(open[1] - temp));
+        open[1] = temp;
+    }
+
+    static void solution() {
+        moveDoor(0, willUse[0], 0);
+        moveDoor(0, willUse[0], 0);
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
