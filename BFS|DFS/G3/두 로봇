@@ -1,0 +1,91 @@
+//최우선순위 1074
+//1563 2056 2565 15684 16987 1263 다익스트라 1043
+//https://school.programmers.co.kr/learn/courses/30/lessons/468373
+//https://jungol.co.kr/problem/1108
+//https://jungol.co.kr/problem/1382
+//https://jungol.co.kr/problem/12491
+//https://jungol.co.kr/problem/8017
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, start, end;
+    static int[] go, back;
+    static class Edge {
+        int v, cost;
+        Edge(int v, int cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+    }
+    static List<Edge> totalConnect;
+    static List<Edge>[] edges;
+
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        start = Integer.parseInt(st.nextToken());
+        end = Integer.parseInt(st.nextToken());
+        totalConnect = new ArrayList<>();
+        edges = new ArrayList[n + 1];
+        go = new int[n + 1];
+        back = new int[n + 1];
+        for(int i = 1; i <= n; ++i) {
+            edges[i] = new ArrayList<>();
+            go[i] = (int)1e9;
+            back[i] = (int)1e9;
+        }
+        for(int i = 1; i < n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            edges[s].add(new Edge(e, c));
+            edges[e].add(new Edge(s, c));
+            totalConnect.add(new Edge(s, e));
+            totalConnect.add(new Edge(e, s));
+        }
+    }
+
+    static void solution() {
+        if(start == end) {
+            System.out.println(0);
+            return;
+        }
+        Deque<Edge> q = new ArrayDeque<>();
+        q.add(new Edge(start, 0));
+        go[start] = 0;
+        while(!q.isEmpty()) {
+            Edge cur =  q.poll();
+            for(Edge nxt :  edges[cur.v]) {
+                if(go[cur.v] + nxt.cost >= go[nxt.v]) continue;
+                go[nxt.v] = go[cur.v] + nxt.cost;
+                q.add(new Edge(nxt.v, go[nxt.v]));
+            }
+        }
+        int answer = Integer.MAX_VALUE;
+        q.add(new Edge(end, 0));
+        back[end] = 0;
+        while(!q.isEmpty()) {
+            Edge cur =  q.poll();
+            for(Edge nxt :  edges[cur.v]) {
+                if(back[cur.v] + nxt.cost >= back[nxt.v]) continue;
+                back[nxt.v] = back[cur.v] + nxt.cost;
+                q.add(new Edge(nxt.v, back[nxt.v]));
+            }
+        }
+        for(Edge nxt : totalConnect) {
+            answer = Math.min(answer, go[nxt.v] + back[nxt.cost]);
+        }
+        System.out.println(answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
