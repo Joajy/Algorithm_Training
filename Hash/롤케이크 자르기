@@ -1,0 +1,26 @@
+import java.util.*;
+
+class Solution {
+    
+    static int answer;
+    static Map<Integer, Integer> a, b;
+    
+    public int solution(int[] topping) {
+        answer = 0;
+        a = new HashMap<>();
+        b = new HashMap<>();
+        for(int t : topping) {
+            // 초기에는 오른쪽 조각에 모든 토핑 추가
+            b.put(t, b.getOrDefault(t, 0) + 1);
+        }
+        for(int i = 0; i < topping.length; ++i) {
+            // 인덱스를 하나씩 넘기면서 왼쪽 조각에 토핑 추가
+            a.put(topping[i], a.getOrDefault(topping[i], 0) + 1);
+            // 오른쪽 조각에서 i번째 토핑 제거, 만약 해당 토핑의 count가 0이라면 remove
+            if(b.get(topping[i]) == 1) b.remove(topping[i]);
+            else b.replace(topping[i], b.get(topping[i]) - 1);
+            if(a.size() == b.size()) ++answer;
+        }
+        return answer;
+    }
+}
