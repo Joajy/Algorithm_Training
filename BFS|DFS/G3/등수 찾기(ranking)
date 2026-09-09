@@ -1,0 +1,76 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st;
+    static int n, m, x;
+    static List<Integer>[] front, back;
+    static boolean[] vis;
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        x = Integer.parseInt(st.nextToken());
+        front = new ArrayList[n + 1];
+        back = new ArrayList[n + 1];
+        vis = new boolean[n + 1];
+        for(int i = 1; i <= n; ++i){
+            front[i] = new ArrayList<>();
+            back[i] = new ArrayList<>();
+        }
+        for(int i = 1; i <= m; ++i){
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            front[v].add(u);
+            back[u].add(v);
+        }
+        vis[x] = true;
+    }
+
+    static int getBestCase(int start) {
+        int count = 1;
+        Deque<Integer> q = new ArrayDeque<>();
+        q.add(start);
+        while(!q.isEmpty()){
+            int cur = q.poll();
+            for (int nxt : front[cur]) {
+                if(vis[nxt]) continue;
+                vis[nxt] = true;
+                ++count;
+                q.add(nxt);
+            }
+        }
+        return count;
+    }
+
+    static int getWorstCase(int start) {
+        int count = 1;
+        Deque<Integer> q = new ArrayDeque<>();
+        q.add(start);
+        while(!q.isEmpty()){
+            int cur = q.poll();
+            for (int nxt : back[cur]) {
+                if(vis[nxt]) continue;
+                vis[nxt] = true;
+                ++count;
+                q.add(nxt);
+            }
+        }
+        return n - count + 1;
+    }
+
+    static void solution() {
+        int highest = getBestCase(x);
+        int lowest  = getWorstCase(x);
+        System.out.println(highest + " " + lowest);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
