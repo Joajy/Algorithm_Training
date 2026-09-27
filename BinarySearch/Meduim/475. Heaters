@@ -1,0 +1,38 @@
+class Solution {
+
+    static int answer;
+    static int[] house, heater;
+
+    static boolean bs(int range) {
+        int index = 0;
+        for(int i = 0; i < heater.length; ++i) {
+            int left  = heater[i] - range;
+            int right = heater[i] + range;
+            while(index < house.length) {
+                if(house[index] >= left && house[index] <= right) ++index;
+                else break;
+            }
+            if(index == house.length) return true;
+        }
+        return false;
+    }
+
+    public int findRadius(int[] houses, int[] heaters) {
+        answer = Integer.MAX_VALUE;
+        house = houses;
+        heater = heaters;
+        int s = 0, e = (int)1e9;
+        Arrays.sort(house);
+        Arrays.sort(heater);
+        while(s <= e) {
+            int mid = (s + e) >> 1;
+            if(bs(mid) == true) {
+                answer = mid;
+                e = mid - 1;
+            } else {
+                s = mid + 1;
+            }
+        }
+        return answer;
+    }
+}
