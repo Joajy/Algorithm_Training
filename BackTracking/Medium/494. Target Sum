@@ -1,0 +1,20 @@
+class Solution {
+
+    static int n, answer;
+
+    static void rec(int[] nums, int target, int index, int sum) {
+        if(index == n) {
+            if(sum == target) ++answer;
+            return;
+        }
+        rec(nums, target, index + 1, sum + nums[index]);
+        rec(nums, target, index + 1, sum - nums[index]);
+    }
+
+    public int findTargetSumWays(int[] nums, int target) {
+        n = nums.length;
+        answer = 0;
+        rec(nums, target, 0, 0);
+        return answer;
+    }
+}
