@@ -1,0 +1,85 @@
+import java.io.*;
+import java.util.*;
+import java.awt.Point;
+
+public class Main {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder sb = new StringBuilder();
+    static StringTokenizer st;
+    static int n, m, meltTime, cntBeforeMelt, curCnt;
+    static int[][] area;
+    static final int[] dx = {0, 1, 0, -1};
+    static final int[] dy = {1, 0, -1, 0};
+
+    static void input() throws IOException {
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        area = new int[n + 2][m + 2];
+        for (int i = 1; i <= n; ++i) {
+            st = new StringTokenizer(br.readLine());
+            for(int j = 1; j <= m; ++j) {
+                area[i][j] = Integer.parseInt(st.nextToken());
+                curCnt += area[i][j];
+            }
+        }
+        meltTime = 0;
+        cntBeforeMelt = curCnt;
+    }
+
+    static void melting(int time) {
+        int[][] temp = new int[n + 2][m + 2];
+        boolean[][] vis = new boolean[n + 2][m + 2];
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= m; ++j) {
+                temp[i][j] = area[i][j];
+            }
+        }
+        Deque<Point> q = new ArrayDeque<>();
+        for (int i = 1; i <= Math.min(n, m); ++i) {
+            q.add(new Point(i, 1));
+            q.add(new Point(i, m));
+            q.add(new Point(1, i));
+            q.add(new Point(n, i));
+            vis[i][1] = vis[i][m] = true;
+            vis[1][i] = vis[n][i] = true;
+        }
+        while (!q.isEmpty()) {
+            Point cur = q.poll();
+            for (int dir = 0; dir < 4; ++dir) {
+                int nx = cur.x + dx[dir];
+                int ny = cur.y + dy[dir];
+                if(nx < 1 || nx > n || ny < 1 || ny > m) continue;
+                if(vis[nx][ny]) continue;
+                vis[nx][ny] = true;
+                // 외곽에 위치한 치즈인 경우, 임시 배열에서 삭제하고 갯수 조정까지 진행
+                if(area[nx][ny] == 1) {
+                    temp[nx][ny] = 0;
+                    --curCnt;
+                } else {
+                    q.add(new Point(nx, ny));
+                }
+            }
+        }
+        area = temp;
+    }
+
+    static void solution() {
+        for(int i = 1; i <= 100; ++i) {
+            melting(i);
+            if(curCnt == 0) {
+                meltTime = i;
+                break;
+            }
+            cntBeforeMelt = curCnt;
+        }
+        System.out.println(meltTime);
+        System.out.println(cntBeforeMelt);
+    }
+
+    public static void main(String[] args) throws IOException {
+        input();
+        solution();
+    }
+}
